@@ -2,12 +2,16 @@ package com.isep.rpg;
 import com.isep.rpg.Constant;
 
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Classe abstraite Hero definit les methodes et attributs des differents heros : Warrior, Hunter, Mage, Healer
  */
 public abstract class Hero extends Combatant {
 
+    // Récupération de notre logger.
+    private static final Logger LOGGER = LogManager.getLogger( Healer.class );
 
     /**
      * Correspond aux fleches, aux potions et à la nourriture possedes par les heros
@@ -28,8 +32,8 @@ public abstract class Hero extends Combatant {
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
      */
-    protected Hero (int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int maxNumberOfArrows, int numberOfPotions, int potionPower,int foodQuantity, int foodPower) throws ArithmeticException {
-        super(maxHealthPoints, maxAttackPoints, maxDefensePoints, maxManaPoints, maxMagicPoints,maxNumberOfArrows, numberOfPotions, potionPower, foodQuantity, foodPower);
+    protected Hero (int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int maxNumberOfArrows, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) throws ArithmeticException {
+        super(maxHealthPoints, maxAttackPoints, maxDefensePoints, maxManaPoints, maxMagicPoints,maxNumberOfArrows, numberOfPotions, potionPower, foodQuantity, foodPower, position);
         this.myItems = myItems ;
     }
 
@@ -66,6 +70,23 @@ public abstract class Hero extends Combatant {
             }
         }
     }
+    public Food getMyFood(){
+        List<Item> myItems = this.getMyItems();
+        if (myItems == null){
+            return  null;
+        }
 
+        for (Item myItem : myItems) {
+            if (myItem!=null && myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)){
+                LOGGER.warn("on a de la nourriture " + myItem);
+                return (Food)myItem;
+
+            }
+            else {
+                // rien
+            }
+        }
+        return null;
+    }
 
 }

@@ -188,10 +188,10 @@ public class TestCombatant {
         ctx.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
 
 
-        Mage myMage = new Mage (100, 5, 5, 50, 20, 3,10,5,15);
-        Healer myHealer = new Healer (80, 4, 4, 60, 15,5,10,1,15);
-        Warrior myWarrior = new Warrior(200, 25 , 20,5,15);
-        Hunter myHunter = new Hunter (125,10, 7, 50,5,10);
+        Mage myMage = new Mage (100, 5, 5, 50, 20, 3,10,5,15, 0);
+        Healer myHealer = new Healer (80, 4, 4, 60, 15,5,10,1,15, 1);
+        Warrior myWarrior = new Warrior(200, 25 , 20,5,15, 2);
+        Hunter myHunter = new Hunter (125,10, 7, 50,5,10, 3);
         TrollKing myTrollKing = new TrollKing(300,15,100);
         Orc myOrc = new Orc (30, 5, 5);
 
@@ -213,25 +213,25 @@ public class TestCombatant {
 
 //        tc.testFonctionSoigner(myWarrior, myHealer);
 
-        myMage = new Mage (100, 5, 5, 50, 20, 3,10,5,15);
-        myHealer = new Healer (80, 4, 4, 60, 15,5,10,1,15);
-        myWarrior = new Warrior(200, 25 , 20,5,15);
-        myHunter = new Hunter (125,10, 7, 50,5,10);
+        myMage = new Mage (100, 5, 5, 50, 20, 3,10,5,15,0);
+        myHealer = new Healer (80, 4, 4, 60, 15,5,10,1,15,1);
+        myWarrior = new Warrior(200, 25 , 20,5,15, 2 );
+        myHunter = new Hunter (125,10, 7, 50,5,10, 3);
         myTrollKing = new TrollKing(300,15,100);
  //       tc.testFonctionBoss(myWarrior,myTrollKing);
 
-        myMage = new Mage (100, 5, 5, 50, 20, 3,10,5,15);
-        myHealer = new Healer (80, 4, 4, 60, 15,5,10,1,15);
-        myWarrior = new Warrior(200, 25 , 20,5,15);
-        myHunter = new Hunter (125,10, 7, 50,5,10);
+        myMage = new Mage (100, 5, 5, 50, 20, 3,10,5,15, 1);
+        myHealer = new Healer (80, 4, 4, 60, 15,5,10,1,15,2 );
+        myWarrior = new Warrior(200, 25 , 20,5,15,3);
+        myHunter = new Hunter (125,10, 7, 50,5,10,4);
         myTrollKing = new TrollKing(300,15,100);
  //       tc.testFonctionBossMulti(intList, myTrollKing);
 
-        myWarrior = new Warrior(200, 25 , 20,5,15);
+        myWarrior = new Warrior(200, 25 , 20,5,15,1);
         myOrc = new Orc(45,7,4);
   //      tc.testFonctionOrc(myWarrior, myOrc);
 
-        myHealer = new Healer (80, 4, 4, 60, 15,7,10,9,15);
+        myHealer = new Healer (80, 4, 4, 60, 15,7,10,9,15,2);
         tc.testPotionAndFoodForHeal(myHealer);
     }
 }

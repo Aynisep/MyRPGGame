@@ -16,6 +16,6 @@ public abstract class Enemy extends Combatant {
      */
 
     protected Enemy(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxNumberOfArrows, int maxManaPoints) {
-        super(maxHealthPoints, maxAttackPoints, maxDefensePoints,0,0, 0, 0, 0, 0, 0);
+        super(maxHealthPoints, maxAttackPoints, maxDefensePoints,0,0, 0, 0, 0, 0, 0, 0);
     }
 }

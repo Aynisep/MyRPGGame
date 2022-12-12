@@ -58,9 +58,9 @@ public  abstract class SpellCaster extends Hero {
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
      */
-    protected SpellCaster(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int numberOfPotions, int potionPower,int foodQuantity, int foodPower) {
+    protected SpellCaster(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) {
 
-        super(maxHealthPoints, maxAttackPoints, maxDefensePoints, maxManaPoints,maxMagicPoints,0,numberOfPotions,potionPower,foodQuantity,foodPower);
+        super(maxHealthPoints, maxAttackPoints, maxDefensePoints, maxManaPoints,maxMagicPoints,0,numberOfPotions,potionPower,foodQuantity,foodPower, position);
 
         Food myFood = new Food(foodQuantity,foodPower) ;
         Potion myPotions = new Potion(numberOfPotions,potionPower) ;

@@ -15,29 +15,18 @@ import org.apache.logging.log4j.core.config.Configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import javafx.application.Application;
 
-public class GUIParser extends Application {
-
-    private ComboBox cbNbOfHeroes = null;
+public class Gameplay extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("guiparser.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("gameplay.fxml"));
 
         primaryStage.setTitle("RPG");
-
-        primaryStage.setScene(new Scene(root, 800, 575));
+        primaryStage.setScene(new Scene(root, 750, 500));
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
 
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-
-        Configuration config = ctx.getConfiguration();
-        LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-        loggerConfig.setLevel(Level.WARN);
-
-        launch();
-    }
 }

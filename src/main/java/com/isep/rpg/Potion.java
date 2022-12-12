@@ -14,8 +14,8 @@ public class Potion extends Consumable{
             throw new IndexOutOfBoundsException();  // la quantité de potion ne peut etre negative
         }
 
-        this.quantity=quantity ;
-        this.power=power ;
+        setQuantity(quantity);
+        setPower(power);
     }
 
 
@@ -25,9 +25,8 @@ public class Potion extends Consumable{
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(200) ;
-        sb.append("Classe = ").append(this.getClass().getName()).append("\n") ;
-        sb.append("\tQuantité = ").append(quantity).append("\n") ;
-        sb.append("\tPuissance = ").append(power).append("\n") ;
+        sb.append("\tQuantité = ").append(getQuantity()).append("\n") ;
+        sb.append("\tPuissance = ").append(getPower()).append("\n") ;
         return sb.toString();
     }
 

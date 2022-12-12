@@ -13,8 +13,8 @@ import java.util.List;
 
 public class Warrior extends Hero {
 
-    private static final Logger LOGGER = LogManager.getLogger( Warrior.class );
-    private String myName = "Warrior" ;
+    private static final Logger LOGGER = LogManager.getLogger(Warrior.class );
+    private String myName = Combatant.S_WARRIOR;
 
 
     /**
@@ -34,9 +34,9 @@ public class Warrior extends Hero {
      * @param foodQuantity quantite de nourriture a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
      */
-    public Warrior(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints,int foodQuantity, int foodPower) throws ArithmeticException {
+    public Warrior(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints,int foodQuantity, int foodPower, int position) throws ArithmeticException {
 
-        super(maxHealthPoints, maxAttackPoints, maxDefensePoints,0,0,0,0,0,foodQuantity,foodPower);
+        super(maxHealthPoints, maxAttackPoints, maxDefensePoints,0,0,0,0,0,foodQuantity,foodPower, position);
 
         if ((maxAttackPoints < 0) || (maxHealthPoints < 0) || (maxDefensePoints < 0)){
             throw new ArithmeticException();
@@ -57,6 +57,7 @@ public class Warrior extends Hero {
         List<Item> intList = Arrays.asList(myItems);
 
         this.setMyItems(intList);
+
     }
 
     /**
@@ -116,20 +117,27 @@ public class Warrior extends Hero {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(200) ;
-        sb.append("Classe = ").append(getMyName()).append("\n") ;
-        sb.append("\tPoints de vie = ").append(this.getHealthPoints()).append("\n") ;
-        sb.append("\tPoints d'attaque = ").append(this.getMaxAttackPoints()).append("\n") ;
-        sb.append("\tPoints de defense = ").append(this.getDefensePoints()).append("\n") ;
+        sb.append("\tVie = ").append(this.getHealthPoints()).append("\n") ;
+        sb.append("\tAttaque = ").append(this.getMaxAttackPoints()).append("\n") ;
+        sb.append("\tDefense = ").append(this.getDefensePoints()).append("\n") ;
 
         List <Item> myItems = this.getMyItems();
-        if (myItems!=null) {
+        try {
+            if (myItems!=null) {
 
-            for (Item myItem : myItems) {
-                if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)) {
-                    sb.append("\tQuantité de nouriture = ").append(myItem.getQuantity()).append("\n");
-                }
+                for (Item myItem : myItems) {
+                    if (myItem!=null) {
+                        if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)) {
+                            sb.append("\tNouriture = ").append(myItem.getQuantity()).append("\n");
+                        }
+                    }                }
             }
         }
+        catch (NullPointerException e){
+            sb.append("\tNourriture = ").append(0).append("\n") ;
+        }
+
+
 
         return sb.toString();
     }

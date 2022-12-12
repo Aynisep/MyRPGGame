@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="589.0" prefWidth="806.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.isep.utils.GUIControler">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <Pane prefHeight="765.0" prefWidth="768.0">
+      <children>
+          <Label fx:id="texteSelectionHero" alignment="CENTER" layoutX="58.0" layoutY="39.0" prefHeight="25.0" prefWidth="196.0" text="Sélectionnez le nombre de héros" />
+
+          <ChoiceBox fx:id="cbNumberOfHeroes" layoutX="275.0" layoutY="39.0" onAction="#onCbButtonClick" prefWidth="150.0" value="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+              <items>
+                  <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="1" />
+                      <String fx:value="2" />
+                      <String fx:value="3" />
+                      <String fx:value="4" />
+                  </FXCollections>
+              </items>
+          </ChoiceBox>
+
+
+          <GridPane fx:id="myHeroesList" alignment="TOP_CENTER" focusTraversable="true" gridLinesVisible="true" layoutX="66.0" layoutY="84.0" prefHeight="200.0" prefWidth="375.0">
+           <columnConstraints>
+             <ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0" minWidth="10.0" prefWidth="163.0" />
+             <ColumnConstraints hgrow="SOMETIMES" maxWidth="181.0" minWidth="10.0" prefWidth="181.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+             <RowConstraints maxHeight="61.0" minHeight="0.0" prefHeight="52.0" vgrow="SOMETIMES" />
+             <RowConstraints maxHeight="56.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+               <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 1" />
+               <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 2" GridPane.rowIndex="1" />
+               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 3" GridPane.rowIndex="2" />
+               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 4" GridPane.rowIndex="3" />
+               <ChoiceBox fx:id="cbHero1" prefHeight="25.0" prefWidth="153.0" value="Warrior" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                   <items>
+                       <FXCollections fx:factory="observableArrayList">
+                           <String fx:value="Warrior" />
+                           <String fx:value="Hunter" />
+                           <String fx:value="Mage" />
+                           <String fx:value="Healer" />
+                       </FXCollections>
+                   </items>
+               </ChoiceBox>
+               <ChoiceBox fx:id="cbHero2" prefHeight="25.0" prefWidth="153.0" value="Hunter" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Warrior" />
+                        <String fx:value="Hunter" />
+                        <String fx:value="Mage" />
+                        <String fx:value="Healer" />
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+          <ChoiceBox fx:id="cbHero3" prefHeight="25.0" prefWidth="153.0" value="Mage" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Warrior" />
+                        <String fx:value="Hunter" />
+                        <String fx:value="Mage" />
+                        <String fx:value="Healer" />
+                    </FXCollections>
+                </items>
+         </ChoiceBox>
+          <ChoiceBox fx:id="cbHero4" prefHeight="25.0" prefWidth="153.0" value="Healer" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Warrior" />
+                        <String fx:value="Hunter" />
+                        <String fx:value="Mage" />
+                        <String fx:value="Healer" />
+                    </FXCollections>
+                </items>
+      </ChoiceBox>
+   </children>
+         </GridPane>
+         <GridPane fx:id="myBoardGame" alignment="CENTER" gridLinesVisible="true" layoutX="0.0" layoutY="0.0" prefHeight="540.0" prefWidth="766.0" visible="false">
+             <columnConstraints>
+                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+             </columnConstraints>
+             <rowConstraints>
+                 <RowConstraints maxHeight="147.0" minHeight="10.0" prefHeight="123.0" vgrow="SOMETIMES" />
+                 <RowConstraints maxHeight="162.0" minHeight="10.0" prefHeight="120.0" vgrow="SOMETIMES" />
+                 <RowConstraints maxHeight="86.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                 <RowConstraints maxHeight="183.0" minHeight="10.0" prefHeight="129.0" vgrow="SOMETIMES" />
+                 <RowConstraints maxHeight="159.0" minHeight="10.0" prefHeight="118.0" vgrow="SOMETIMES" />
+                 <RowConstraints maxHeight="56.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             </rowConstraints>
+             <children>
+                 <Button fx:id="bAttack" disable="false" mnemonicParsing="false" onAction="#onActionButtonAttack" text="Meele Attack" visible="true" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                 <Button fx:id="bSpecialAttack" disable="false" mnemonicParsing="false" onAction="#onActionButtonSpecial" text="Special Attack" visible="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                 <Button fx:id="bDefense" disable="false" mnemonicParsing="false" onAction="#onActionButtonDefense" text="Defense" visible="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                 <Button fx:id="bFood" disable="false" mnemonicParsing="false" onAction="#onActionButtonFood" text="Food" visible="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                 <Button fx:id="bPotion" disable="false" mnemonicParsing="false" onAction="#onActionButtonPotion" text="Potion" visible="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+                 <Pane fx:id="ligne1" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                 <Pane fx:id="ligne2" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                 <Pane fx:id="ligne3" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                 <Pane fx:id="ligne4" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                 <Pane fx:id="ligne5" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+
+             </children>
+
+         </GridPane>
+      </children>
+   </Pane>
+
+    <Label fx:id="welcomeText" alignment="CENTER" contentDisplay="TOP" prefHeight="221.0" prefWidth="114.0" />
+
+    <Pane onMouseClicked="#myHeroUpdateProfile" prefHeight="200.0" prefWidth="175.0" />
+    <Button fx:id="bFight" defaultButton="true" onAction="#onHelloButtonClick" text="Fight" textFill="#942c2c" />
+</VBox>

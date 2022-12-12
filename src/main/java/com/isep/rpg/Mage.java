@@ -13,13 +13,17 @@ import java.util.List;
 
 public class Mage extends SpellCaster {
 
-    private String myName = "Mage" ;
+    private String myName = Combatant.S_MAGE;
 
     // Récupération de notre logger.
     private static final Logger LOGGER = LogManager.getLogger( Healer.class );
 
     // quantité de nouriture initiale
     private Food myFood = null;
+
+    public void setMyPotion(Potion myPotion) {
+        this.myPotion = myPotion;
+    }
 
     // quantité de potion initiale
     private Potion myPotion = null;
@@ -45,9 +49,9 @@ public class Mage extends SpellCaster {
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
      */
-    public Mage(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int numberOfPotions, int potionPower,int foodQuantity, int foodPower) throws ArithmeticException {
+    public Mage(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) throws ArithmeticException {
 
-        super(maxHealthPoints, maxAttackPoints, maxDefensePoints, maxManaPoints, maxMagicPoints,numberOfPotions,potionPower,foodQuantity,foodPower);
+        super(maxHealthPoints, maxAttackPoints, maxDefensePoints, maxManaPoints, maxMagicPoints,numberOfPotions,potionPower,foodQuantity,foodPower, position);
 
         if ((maxAttackPoints < 0) || (maxHealthPoints < 0) || (maxDefensePoints < 0) || (maxManaPoints < 0) || (maxMagicPoints < 0)) {
             throw new ArithmeticException();
@@ -92,7 +96,7 @@ public class Mage extends SpellCaster {
         }
 
         for (Item myItem : myItems) {
-            if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD) && (myItem.getQuantity()>0)){
+            if (myItem!=null && myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD) && (myItem.getQuantity()>0)){
                 LOGGER.warn("on a encore de la nouriture");
                 return true;
 
@@ -102,6 +106,25 @@ public class Mage extends SpellCaster {
             }
         }
         return false;
+    }
+
+    public Potion getMyPotion(){
+        List<Item> myItems = this.getMyItems();
+        if (myItems == null){
+            return  null;
+        }
+
+        for (Item myItem : myItems) {
+            if (myItem!=null && myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.POTION)){
+                LOGGER.warn("on a des potions " + myItem);
+                return (Potion)myItem;
+
+            }
+            else {
+                // rien
+            }
+        }
+        return null;
     }
     /**
      * @return Test pour etre sur d'avoir des potions disponible et de les consommer
@@ -113,7 +136,7 @@ public class Mage extends SpellCaster {
             return  false;
         }
         for (Item myItem : myItems) {
-            if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.POTION) && (myItem.getQuantity()>0)){
+            if (myItem!=null && myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.POTION) && (myItem.getQuantity()>0)){
                 LOGGER.warn("on a encore de la potion");
                 return true;
             }
@@ -138,16 +161,18 @@ public class Mage extends SpellCaster {
 
         switch (typeOfAction) {
             case Constant.ACTION_POTION:
+                this.setManaPoints(quantity);
+                break;
             case Constant.ACTION_FOOD:
                 this.setHealthPoints(quantity);
-
                 break;
             case Constant.ACTION_CAST:
                 if (this.getManaPoints()>0) {
                     if (!myTarget.isDefending()) {
                         myTarget.setHealthPoints(-quantity) ;
                     } //il perd du mana si l'ennemi est en train de se défendre
-                    this.setManaPoints(this.getManaPoints()-1);
+
+                    this.setManaPoints(-1);
                     myTarget.setDefending(false);
                 }
                 break;
@@ -171,22 +196,23 @@ public class Mage extends SpellCaster {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(200) ;
-        sb.append("Classe = ").append(getMyName()).append("\n") ;
-        sb.append("\tPoints de vie = ").append(this.getHealthPoints()).append("\n") ;
-        sb.append("\tPoints de mana = ").append(this.getManaPoints()).append("\n") ;
-        sb.append("\tPoints d'attaque = ").append(this.getMaxAttackPoints()).append("\n") ;
-        sb.append("\tPoints de defense = ").append(this.getDefensePoints()).append("\n") ;
-        sb.append("\tPoints de magie = ").append(this.getMaxMagicPoints()).append("\n") ;
+        sb.append("\tVie = ").append(this.getHealthPoints()).append("\n") ;
+        sb.append("\tMana = ").append(this.getManaPoints()).append("\n") ;
+        sb.append("\tAttaque = ").append(this.getMaxAttackPoints()).append("\n") ;
+        sb.append("\tDefense = ").append(this.getDefensePoints()).append("\n") ;
+        sb.append("\tMagie = ").append(this.getMaxMagicPoints()).append("\n") ;
 
         List <Item> myItems = this.getMyItems();
         if (myItems!=null) {
 
             for (Item myItem : myItems) {
-                if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.POTION)){
-                    sb.append("\tQuantité de potion = ").append(myItem.getQuantity()).append("\n");
-                }
-                else if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)){
-                    sb.append("\tQuantité de nouriture = ").append(myItem.getQuantity()).append("\n");
+                if (myItem!=null) {
+                    if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.POTION)){
+                        sb.append("\tPotion = ").append(myItem.getQuantity()).append("\n");
+                    }
+                    else if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)){
+                        sb.append("\tNouriture = ").append(myItem.getQuantity()).append("\n");
+                    }
                 }
             }
         }

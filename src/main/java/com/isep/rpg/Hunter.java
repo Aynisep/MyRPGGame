@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Hunter extends Hero {
 
-    private String myName = "Hunter" ;
+    private String myName = Combatant.S_HUNTER;
     private static final Logger LOGGER = LogManager.getLogger( Hunter.class );
 
 
@@ -35,9 +35,9 @@ public class Hunter extends Hero {
      * @param foodQuantity quantite de nourriture a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
      */
-    public Hunter(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints,int maxNumberOfArrows,int foodQuantity, int foodPower) throws ArithmeticException {
+    public Hunter(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints,int maxNumberOfArrows,int foodQuantity, int foodPower, int position) throws ArithmeticException {
 
-        super(maxHealthPoints, maxAttackPoints, maxDefensePoints,0,0,maxNumberOfArrows,0,0,foodQuantity,foodPower);
+        super(maxHealthPoints, maxAttackPoints, maxDefensePoints,0,0,maxNumberOfArrows,0,0,foodQuantity,foodPower, position);
 
         if ((maxAttackPoints < 0) || (maxHealthPoints < 0) || (maxDefensePoints < 0) || (maxNumberOfArrows < 0)){
             throw new ArithmeticException();
@@ -104,7 +104,7 @@ public class Hunter extends Hero {
                     if (!myTarget.isDefending()) {
                         myTarget.setHealthPoints(-quantity) ;
                     } //il perd une flèche si l'ennemi est en train de se défendre
-                    this.setNumberOfArrows(this.getNumberOfArrows()-1) ;
+                    this.setNumberOfArrows(getNumberOfArrows()-1) ;
                     myTarget.setDefending(false);
                 }
                 break;
@@ -127,18 +127,19 @@ public class Hunter extends Hero {
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(200) ;
-        sb.append("Classe = ").append(getMyName()).append("\n") ;
-        sb.append("\tPoints de vie = ").append(this.getHealthPoints()).append("\n") ;
-        sb.append("\tPoints d'attaque = ").append(this.getMaxAttackPoints()).append("\n") ;
-        sb.append("\tPoints de defense = ").append(this.getDefensePoints()).append("\n") ;
-        sb.append("\tNombre de fleches = ").append(this.getNumberOfArrows()).append("\n") ;
+        sb.append("\tVie = ").append(this.getHealthPoints()).append("\n") ;
+        sb.append("\tAttaque = ").append(this.getMaxAttackPoints()).append("\n") ;
+        sb.append("\tDefense = ").append(this.getDefensePoints()).append("\n") ;
+        sb.append("\tFleches = ").append(this.getNumberOfArrows()).append("\n") ;
 
         List <Item> myItems = this.getMyItems();
         if (myItems!=null) {
 
             for (Item myItem : myItems) {
-                if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)){
-                    sb.append("\tQuantité de nouriture = ").append(myItem.getQuantity()).append("\n");
+                if (myItem!=null) {
+                    if (myItem.getClass().getSimpleName().equalsIgnoreCase(Constant.FOOD)) {
+                        sb.append("\tNouriture = ").append(myItem.getQuantity()).append("\n");
+                    }
                 }
             }
         }

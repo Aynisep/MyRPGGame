@@ -91,6 +91,17 @@ public abstract class Combatant {
 
     private String myName = "Combatant" ;
 
+    /**
+     * position dans la grid
+     */
+    private int position ;
+
+    public final static String S_HEALER = "Healer" ;
+    public final static String S_WARRIOR = "Warrior" ;
+    public final static String S_HUNTER = "Hunter" ;
+
+    public final static String S_MAGE = "Mage" ;
+
 
     /**
      *  Constructeur de la classe retourne une exception arithmetique si l'un des arguments est negatif
@@ -105,7 +116,7 @@ public abstract class Combatant {
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
      */
-    protected Combatant(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int maxNumberOfArrows, int numberOfPotions, int potionPower,int foodQuantity, int foodPower) {
+    protected Combatant(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int maxNumberOfArrows, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) {
 
         this.maxHealthPoints = maxHealthPoints ;
         this.healthPoints = maxHealthPoints ;
@@ -125,6 +136,7 @@ public abstract class Combatant {
         this.maxMagicPoints = maxMagicPoints ;
         this.magicPoints = maxMagicPoints ;
 
+        this.position = position ;
 
         this.defending = false ; // par convention à la creation d'un hero il ne peut pas avoir active sa defense
 
@@ -188,6 +200,24 @@ public abstract class Combatant {
      */
     public int getMaxManaPoints() {
         return maxManaPoints;
+    }
+
+
+    /**
+     * met la position du combatant
+     * @param postion position sur la grid
+     */
+    public void setPosition(int postion) {
+        this.position = position;
+
+    }
+
+    /**
+     *
+     * @return la postion sur la grid
+     */
+    public int getPosition() {
+        return position;
     }
 
 
@@ -305,7 +335,7 @@ public abstract class Combatant {
             this.healthPoints = this.healthPoints + healthPointsFlux;
         }
 
-        if (healthPoints<0)  {
+        if (this.healthPoints<0)  {
             this.healthPoints=0 ;
         }
         else if (healthPoints>maxHealthPoints)  {
@@ -330,12 +360,18 @@ public abstract class Combatant {
     public void setManaPoints (int manaPointsFlux){
         this.manaPoints=this.manaPoints+manaPointsFlux ;
 
+        LOGGER.warn ("--------------------Point de mana a la sortie   manaPoints ------>>>>>    =    "+ this.manaPoints) ;
+        LOGGER.warn ("--------------------Point de mana a la sortie   manaPointsFlux ------>>>>>    =    "+ manaPointsFlux) ;
         if (manaPoints<0)  {
+            LOGGER.warn ("--------------------  ici ------>>>>>    =    ") ;
             this.manaPoints=0 ;
         }
         else if (manaPoints>maxManaPoints)  {
+            LOGGER.warn ("--------------------  ici 2 ------>>>>>    =    ") ;
             this.manaPoints=maxManaPoints ;
         }
+        LOGGER.warn ("--------------------  ici 3 ------>>>>>    =    ") ;
+        LOGGER.warn ("--------------------Point de mana a la sortie  ------>>>>>    =    "+ this.getManaPoints()) ;
     }
 
     /**
@@ -362,6 +398,7 @@ public abstract class Combatant {
         this.defending = defending ;
     }
 
+    public void doMyAction(int typeOfAction, int quantity, Combatant myTarget){};
 
 }
 

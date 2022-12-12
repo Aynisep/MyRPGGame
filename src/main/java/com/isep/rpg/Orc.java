@@ -4,6 +4,8 @@ package com.isep.rpg;
 import com.isep.rpg.Combatant;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.List;
+
 /**
  * Classe Orc qui indique les differentes statistiques et les actions possibles
  */
@@ -62,5 +64,18 @@ public class Orc extends Enemy {
                 break;
         }
 
+    }
+
+    /*
+     * Affiche le contenu de l'objet Combatant
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer(200) ;
+        sb.append("\tVie = ").append(this.getHealthPoints()).append("\n") ;
+        sb.append("\tAttaque = ").append(this.getMaxAttackPoints()).append("\n") ;
+        sb.append("\tDefense = ").append(this.getDefensePoints()).append("\n") ;
+
+        return sb.toString();
     }
 }

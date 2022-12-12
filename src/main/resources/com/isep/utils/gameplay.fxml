@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="500.0" prefWidth="750.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.isep.utils.GUIControler">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <Pane prefHeight="500.0" prefWidth="750.0">
+   <children>
+      <GridPane id="myPaneGameBoard" fx:id="paneGameBoard" layoutX="-20.0" layoutY="-20.0" prefHeight="500.0" prefWidth="750.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="88.0" minHeight="10.0" prefHeight="88.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="82.0" minHeight="10.0" prefHeight="82.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="54.0" minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="127.0" minHeight="10.0" prefHeight="120.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="56.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="Action5" disable="true" mnemonicParsing="false" onAction="#onStartFightClick" text="Button" visible="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+            <Button fx:id="Action1" disable="true" mnemonicParsing="false" onAction="#onStartFightClick" text="Button" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Button fx:id="Action2" disable="true" mnemonicParsing="false" onAction="#onStartFightClick" text="Button" visible="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Button fx:id="Action3" disable="true" mnemonicParsing="false" onAction="#onStartFightClick" text="Button" visible="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+            <Button fx:id="Action4" disable="true" mnemonicParsing="false" onAction="#onStartFightClick" text="Button" visible="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+             <Pane fx:id="ligne1" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+             <Pane fx:id="ligne2" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+             <Pane fx:id="ligne3" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                  <children>
+                     <Button fx:id="startFight" layoutX="0.0" layoutY="-20.0" mnemonicParsing="false" onAction="#onStartFightClick" prefHeight="90.0" prefWidth="100.0" text="Start" />
+                  </children></Pane>
+             <Pane fx:id="ligne4" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+             <Pane fx:id="ligne5" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" prefWidth="200.0" style="-fx-background: #000000; -fx-background-color: #000000; -fx-border-color: #000000;" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+
+         </children>
+      </GridPane>
+   </children>
+    </Pane>
+
+</VBox>
