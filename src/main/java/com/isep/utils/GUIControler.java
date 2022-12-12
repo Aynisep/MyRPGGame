@@ -38,8 +38,6 @@ public class GUIControler {
     @FXML
     private GridPane myBoardGame;
     @FXML
-    private Button startFight;
-    @FXML
     private Button bAttack;
     @FXML
     private Button bSpecialAttack;
@@ -58,20 +56,21 @@ public class GUIControler {
     private Parent root;
     private Enemy[] myEnemies;
 
+    private int nbOfTurn = 0;
     private int attaquantEnCours = 0;
 
     private Combatant[] myHeroes;
 
-    private List<Combatant> myAttackList;
+    private List<Combatant> myAttackList;  // contient la liste des heros mélanges, morts et vivants
 
-    private List <Combatant> myAttackListEnCours;
-    private List <Combatant>  tmpMyAttackListEnCours;
+    private List <Combatant> myAttackListEnCours;  // contient la liste des heros vivants, ceux qui vont attaquer
 
     private final static String MAGE_FILE = "mage.png";
     private final static String WARRIOR_FILE = "warrior.png";
     private final static String HEALER_FILE = "healer.png";
     private final static String HUNTER_FILE = "hunter.png";
     private final static String ORC_FILE = "orc.png";
+    private final static String TROLLKING_FILE = "trollking.png";
 
     private final static String RIP_FILE = "rip.png";
     private final static String COLOR_BACKGROUND = "#FFCCCC";
@@ -90,22 +89,44 @@ public class GUIControler {
     private int nbCombatsEffectues = 0;
     private final String[][] hero = {{"Warrior", WARRIOR_FILE}, {"Hunter", HUNTER_FILE}, {"Mage", MAGE_FILE}, {"Healer", HEALER_FILE}};
 
-    private void drawImage(String myImage, int colunm, int row) {
-        Image myImageTmp = new Image(getClass().getResourceAsStream(myImage), 125, 125, true, true);
-        ImageView myImageView = new ImageView(myImageTmp);
-        GridPane gridpane = new GridPane();
-        gridpane.add(myImageView, 0, 0);
-        myBoardGame.add(gridpane, colunm, row);
+    private void drawImage(String myImage, int column, int row) {
+
+        GridPane gridpane = null;
+        Image myImageTmp = null;
+        ImageView myImageView = null;
+
+       try{
+            myImageTmp = new Image(getClass().getResourceAsStream(myImage), 125, 125, true, true);
+            myImageView = new ImageView(myImageTmp);
+           gridpane = (GridPane) getNodeFromGridPane(myBoardGame, column, (row));
+           gridpane.getChildren().remove(0);
+           gridpane.add(myImageView, 0, 0);
+       }
+       catch(Exception e) {
+           gridpane = new GridPane();
+           gridpane.add(myImageView, 0, 0);
+           myBoardGame.add(gridpane, column, row);
+       }
     }
 
     private void drawLabel(Object myHero, int colunm, int row) {
-        Label myLabel = new Label();
-        myLabel.setText(myHero.toString());
-        myBoardGame.add(myLabel, colunm, row);
+
+        Node myNode = getNodeFromGridPane(myBoardGame, colunm, (row));
+        if (myNode != null  && myNode.getClass().equals(Label.class)) {
+            LOGGER.warn("---------------------- labbel existe deja" + ((Label)myNode).getText());
+            ((Label) myNode).setText(myHero.toString());
+            myNode = null;
+       //     myBoardGame.getChildren().remove(0);
+        }
+        else{
+            Label myLabel = new Label(myHero.toString());
+            myBoardGame.add(myLabel, colunm, row);
+        }
+
     }
 
 
-    private void prepareBoardGame() {
+        private void prepareBoardGame() {
         myHeroes = new Combatant[Integer.parseInt(cbNumberOfHeroes.getValue().toString())];
         if (cbHero1.getValue().toString().equalsIgnoreCase(hero[0][0])) {
             myHeroes[0] = new Warrior(200, 125, 20, 5, 15, 0);
@@ -195,26 +216,23 @@ public class GUIControler {
      * décide de l'ordre d'attaque
      */
     private void startFight() {
-        LOGGER.warn("début des combats");
+        LOGGER.warn("début des combats, tout premier tour");
 
-        myAttackList = Arrays.asList(myHeroes);
-        Collections.shuffle(myAttackList);
-        myAttackList.toArray(myHeroes);
-
-        Combatant ctmp = myAttackList.get(0);
+        Combatant ctmp = myAttackListEnCours.get(0);
         LOGGER.warn("le premier attaquant est : " + ctmp.toString());
 
         int myAttaquantCollumn = ctmp.getPosition();
 
         if (myAttaquantCollumn>=2)
         {
-            myAttaquantCollumn++;
+            myAttaquantCollumn++;   // trouver la colonne de l'attaquant sur le grid
         }
-        Node myNode = getNodeFromGridPane(myBoardGame, myAttaquantCollumn, 3);
+
+        Node myNode = getNodeFromGridPane(myBoardGame, myAttaquantCollumn, 3);   // l'image de l'attaquant
 
         GridPane gridpane = (GridPane)myNode;
 
-        gridpane.setStyle("-fx-background-color: "+COLOR_BACKGROUND+";");
+        gridpane.setStyle("-fx-background-color: "+COLOR_BACKGROUND+";");  // posionner le fond en rosé, on prepare les boutons
 
         // bAttack : mélée attaque
         // bouton 2 : attaque speciale
@@ -248,23 +266,31 @@ public class GUIControler {
             bPotion.setDisable(true);
         }
 
-        attaquantEnCours = 0; // le premier attaquant est le premier de la liste myAttackList
+        attaquantEnCours = 0; // le premier attaquant de la liste  est le premier de la liste myAttackList
 
 
         bFinDesAttaques = false;
-        myAttackListEnCours = new ArrayList<>(myAttackList);
-        tmpMyAttackListEnCours = new ArrayList<>(myAttackList);
-        bFirstAttackOfTheTurn = false;
     }
 
-    private void ennemyAttack(){
+    private ArrayList<Combatant> getListCombantsAlive(){
 
+        ArrayList myListEnCours = new ArrayList<>();
+        for (Combatant c : myAttackList) {
+            if (c!=null && c.isAlive()){
+                myListEnCours.add(c);
+            }
+
+        }
+        return myListEnCours;
+    }
+    private void ennemyAttack(){
         bAttack.setDisable(false);
         bSpecialAttack.setDisable(false);
         bDefense.setDisable(false);
         bFood.setDisable(false);
         bPotion.setDisable(false);
 
+        bFinDesAttaques = false;
 
         for (Enemy myEnnemy : myEnemies)
         {
@@ -285,37 +311,221 @@ public class GUIControler {
                 }
 
                 Combatant myAlly =(Combatant) myHeroes[positionDansLaListe];
-
+                LOGGER.warn("l'ennemy "+ myEnnemy.toString() + " attaque l'ally "+ myAlly.toString());
                  myEnnemy.doMyAction(Constant.ACTION_MEELE_ATTACK, myEnnemy.getMaxAttackPoints(),myAlly);
+
                 drawAfterFightEnemy(myAlly, column, 3);
+                LOGGER.warn("après l'attaque l'ally "+ myAlly.toString() + " colonne = "+ column);
+
             }
         }
 
         resetDefense();
-        myAttackListEnCours = new ArrayList<Combatant>(myAttackList);   // la liste de mes combatants, si vide prend la liste initiale
 
-        if (myHeroes!=null && myHeroes.length>0)
+        myAttackListEnCours = getListCombantsAlive();   // la liste de mes combatants hero qui vont etre attaque
+
+
+        if (myAttackListEnCours!=null && myAttackListEnCours.size()>0)
         {
-            int positionDansLaListe = trouverFirstLivingAlly();
-            LOGGER.warn("trouverFirstLivingAlly : " + positionDansLaListe);
+            int positionDansLaListe = 0;
 
-            if (positionDansLaListe<0){
-                // mettre un ecran de perdu  #TODO
-                bFinDelaManche = true;
+            int column = myHeroes[positionDansLaListe].getPosition();
+
+            if (column >= 2) {
+                column++;
+            }
+            Combatant myAlly = (Combatant) myHeroes[positionDansLaListe];
+
+            LOGGER.warn("le premier attaquant du deuxieme tour est : " + myAlly.toString());
+
+            Node myNode = getNodeFromGridPane(myBoardGame, column, 3);
+
+            GridPane gridpane = (GridPane) myNode;
+
+            gridpane.setStyle("-fx-background-color: " + COLOR_BACKGROUND + ";");
+
+            // bAttack : mélée attaque
+            // bouton 2 : attaque speciale
+            // bouton 3 : defense
+            // bouton 4 : food
+            // bouton 5 : potion
+            // désactive les buttons inutiles par rapport au premier attaquant : ctmp
+            if (myAlly.getMyName().equals(Combatant.S_HUNTER)) {
+                bAttack.setDisable(false);
+                bSpecialAttack.setDisable(false);
+                bDefense.setDisable(false);
+                bFood.setDisable(false);
+                bPotion.setDisable(true);
+            } else if (myAlly.getMyName().equals(Combatant.S_MAGE)) {
+                bAttack.setDisable(false);
+                bSpecialAttack.setDisable(false);
+                bDefense.setDisable(false);
+                bFood.setDisable(false);
+                bPotion.setDisable(false);
+            } else if (myAlly.getMyName().equals(Combatant.S_HEALER)) {
+                bAttack.setDisable(false);
+                bSpecialAttack.setDisable(false);
+                bDefense.setDisable(false);
+                bFood.setDisable(false);
+                bPotion.setDisable(false);
+            } else {  // WARRIOR
+                bAttack.setDisable(false);
+                bSpecialAttack.setDisable(true);
+                bDefense.setDisable(false);
+                bFood.setDisable(false);
+                bPotion.setDisable(true);
+            }
+        }
+        else
+        {
+            this.bFinDelaManche = true;
+
+            bAttack.setDisable(false);
+            bSpecialAttack.setDisable(false);
+            bDefense.setDisable(false);
+            bFood.setDisable(false);
+            bPotion.setDisable(false);
+
+            myAttackListEnCours = getListCombantsAlive();
+            if (myAttackListEnCours.size()==0){
+                // on a gagne la manche
+                // on a perdu la partie
+                // on affiche le message de fin de jeu
+                // on affiche le message de fin de jeu
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Fin de la partie, Vous avez perdu la partie ");
+                alert.setContentText("Vous avez perdu la partie");
+                alert.showAndWait();
+                System.exit(0);
+            }
+        }
+
+    }
+
+    private void resetButton(){
+        int firstLivingAlly = trouverFirstLivingAlly();
+
+
+        Combatant myHero = myHeroes[firstLivingAlly];
+
+        LOGGER.warn("le premier attaquant toujours vivant est : " + myHero.toString());
+
+        bAttack.setVisible(true);
+        bSpecialAttack.setVisible(true);
+        bDefense.setVisible(true);
+        bFood.setVisible(true);
+        bPotion.setVisible(true);
+
+        if (myHero.getMyName().equals(Combatant.S_HUNTER)) {
+            bAttack.setDisable(false);
+            bSpecialAttack.setDisable(false);
+            bDefense.setDisable(false);
+            bFood.setDisable(false);
+            bPotion.setDisable(true);
+
+        } else if (myHero.getMyName().equals(Combatant.S_MAGE)) {
+            bAttack.setDisable(false);
+            bSpecialAttack.setDisable(false);
+            bDefense.setDisable(false);
+            bFood.setDisable(false);
+            bPotion.setDisable(false);
+        } else if (myHero.getMyName().equals(Combatant.S_HEALER)) {
+            bAttack.setDisable(false);
+            bSpecialAttack.setDisable(false);
+            bDefense.setDisable(false);
+            bFood.setDisable(false);
+            bPotion.setDisable(false);
+        } else {  // WARRIOR
+            bAttack.setDisable(false);
+            bSpecialAttack.setDisable(true);
+            bDefense.setDisable(false);
+            bFood.setDisable(false);
+            bPotion.setDisable(true);
+        }
+
+    }
+
+    private void heroTurn() {
+        try{
+
+            /// a verifier sauvegarde de la liste d'attaque initiale
+
+            Combatant currentCombatant = myAttackListEnCours.get(0);
+
+            LOGGER.warn("combien de combatants dans la liste " + myAttackListEnCours.size());
+
+            if (bFirstAttackOfTheTurn)
+            {
+                // on remet le background a blanc
+                int myCurrentColumn = currentCombatant.getPosition();
+
+                if (myCurrentColumn>=2){
+                    myCurrentColumn++;
+                }
+
+                Node myNode = getNodeFromGridPane(myBoardGame, myCurrentColumn, 3);
+                GridPane gridpane = (GridPane)myNode;
+                gridpane.setStyle("-fx-background-color: #f5f4f5;");
+                bFirstAttackOfTheTurn = false;
             }
             else {
-                int column = myHeroes[positionDansLaListe].getPosition();
 
-                if (column >= 2) {
-                    column++;
+            }
+
+            currentCombatant = myAttackListEnCours.get(0);
+
+            if (currentCombatant!=null){
+                myAttackListEnCours.remove(0);
+            }
+
+            int myCurrentColumn = currentCombatant.getPosition();
+
+            if (myCurrentColumn>=2){
+                myCurrentColumn++;
+            }
+
+
+            // on remet le background a blanc
+            Node myNode = getNodeFromGridPane(myBoardGame, myCurrentColumn, 3);
+            GridPane gridpane = (GridPane)myNode;
+            gridpane.setStyle("-fx-background-color: #f5f4f5;");
+
+            Combatant newCombatant  = null;
+
+
+
+            boolean bStop = false;
+            int iCounter = myAttackListEnCours.size();
+
+
+
+            if (iCounter==0)
+            {
+                bFinDesAttaques = true;  // on passe a l'ennemi
+            }
+            else {
+
+                int i = 0;
+                while (!bStop && (i <= iCounter)) {
+                    if (myAttackListEnCours.get(i) != null && myAttackListEnCours.get(i).isAlive()) {
+                        newCombatant = myAttackListEnCours.get(i);
+                        bStop = true;
+                    }
+                    i++;
                 }
-                Combatant myAlly = (Combatant) myHeroes[positionDansLaListe];
 
- LOGGER.warn("le premier attaquant du deuxieme tour est : " + myAlly.toString());
+                myCurrentColumn = newCombatant.getPosition();
 
-                Node myNode = getNodeFromGridPane(myBoardGame, column, 3);
+                LOGGER.warn("--------------------le prochain combatant : " + newCombatant.toString());
 
-                GridPane gridpane = (GridPane) myNode;
+
+                if (myCurrentColumn >= 2) {
+                    myCurrentColumn++;
+                }
+
+                myNode = getNodeFromGridPane(myBoardGame, myCurrentColumn, 3);
+
+                gridpane = (GridPane) myNode;
 
                 gridpane.setStyle("-fx-background-color: " + COLOR_BACKGROUND + ";");
 
@@ -325,19 +535,19 @@ public class GUIControler {
                 // bouton 4 : food
                 // bouton 5 : potion
                 // désactive les buttons inutiles par rapport au premier attaquant : ctmp
-                if (myAlly.getMyName().equals(Combatant.S_HUNTER)) {
+                if (newCombatant.getMyName().equals(Combatant.S_HUNTER)) {
                     bAttack.setDisable(false);
                     bSpecialAttack.setDisable(false);
                     bDefense.setDisable(false);
                     bFood.setDisable(false);
                     bPotion.setDisable(true);
-                } else if (myAlly.getMyName().equals(Combatant.S_MAGE)) {
+                } else if (newCombatant.getMyName().equals(Combatant.S_MAGE)) {
                     bAttack.setDisable(false);
                     bSpecialAttack.setDisable(false);
                     bDefense.setDisable(false);
                     bFood.setDisable(false);
                     bPotion.setDisable(false);
-                } else if (myAlly.getMyName().equals(Combatant.S_HEALER)) {
+                } else if (newCombatant.getMyName().equals(Combatant.S_HEALER)) {
                     bAttack.setDisable(false);
                     bSpecialAttack.setDisable(false);
                     bDefense.setDisable(false);
@@ -353,114 +563,45 @@ public class GUIControler {
             }
 
         }
-        else
-        {
-            this.bFinDelaManche = true;
-        }
-
-    }
-
-    private void heroTurn() {
-        try{
-             Combatant currentCombatant = myAttackListEnCours.get(0);
-
-            int myCurrentColumn = currentCombatant.getPosition();
-
-            if (myCurrentColumn>=2){
-                myCurrentColumn++;
-            }
-
-            // on remet le background a blanc
-            Node myNode = getNodeFromGridPane(myBoardGame, myCurrentColumn, 3);
-            GridPane gridpane = (GridPane)myNode;
-            gridpane.setStyle("-fx-background-color: #FFFFFF;");
-
-            Combatant newCombatant  = null;
-
-            /// a verifier sauvegarde de la liste d'attaque initiale
-            if (bFirstAttackOfTheTurn)
-            {
-                bFirstAttackOfTheTurn = false;
-            }
-
-            myAttackListEnCours.remove(0);
-
-            boolean bStop = false;
-            int iCounter = myAttackListEnCours.toArray().length;
-
-            if (iCounter==0)
-            {
-                bFinDesAttaques = true;
-            }
-
-
-            int i = 0 ;
-            while (!bStop && (i<=iCounter))
-            {
-                if (myAttackListEnCours.get(i)!=null && myAttackListEnCours.get(i).isAlive())
-                {
-                    newCombatant = myAttackListEnCours.get(i);
-                    bStop=true;
-                }
-                i++;
-            }
-
-            myCurrentColumn = newCombatant.getPosition();
-
-            if (myCurrentColumn>=2){
-                myCurrentColumn++;
-            }
-
-            myNode = getNodeFromGridPane(myBoardGame, myCurrentColumn, 3);
-
-            gridpane = (GridPane)myNode;
-
-            gridpane.setStyle("-fx-background-color: "+COLOR_BACKGROUND+";");
-
-            // bAttack : mélée attaque
-            // bouton 2 : attaque speciale
-            // bouton 3 : defense
-            // bouton 4 : food
-            // bouton 5 : potion
-            // désactive les buttons inutiles par rapport au premier attaquant : ctmp
-            if (newCombatant.getMyName().equals(Combatant.S_HUNTER)) {
-                bAttack.setDisable(false);
-                bSpecialAttack.setDisable(false);
-                bDefense.setDisable(false);
-                bFood.setDisable(false);
-                bPotion.setDisable(true);
-            } else if (newCombatant.getMyName().equals(Combatant.S_MAGE)) {
-                bAttack.setDisable(false);
-                bSpecialAttack.setDisable(false);
-                bDefense.setDisable(false);
-                bFood.setDisable(false);
-                bPotion.setDisable(false);
-            } else if (newCombatant.getMyName().equals(Combatant.S_HEALER)) {
-                bAttack.setDisable(false);
-                bSpecialAttack.setDisable(false);
-                bDefense.setDisable(false);
-                bFood.setDisable(false);
-                bPotion.setDisable(false);
-            } else {  // WARRIOR
-                bAttack.setDisable(false);
-                bSpecialAttack.setDisable(true);
-                bDefense.setDisable(false);
-                bFood.setDisable(false);
-                bPotion.setDisable(true);
-            }
-
-        }
         catch (Exception e)
         {
-            bFinDesAttaques = true;
+            LOGGER.warn("--------------------probleme de miose a jour : " + e.toString());
         }
         LOGGER.warn("------> fin du tour " + bFinDesAttaques);
 
         bFinDelaManche = !isEnnemyAlive();
 
-        LOGGER.warn("------> finDelaManche  " + bFinDelaManche);
+        if (bFinDelaManche) {
+            // on a gagne la manche
+            // on a perdu la partie
+            // on affiche le message de fin de jeu
+            // on affiche le message de fin de jeu
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Fin de la manche, Vous avez gagné cette manche ");
+            alert.setContentText("Vous avez gagné cette manche");
+            alert.showAndWait();
+
+            nbOfTurn++;
+            if (nbOfTurn<this.NB_TOUR_MAX){
+                resetEnemyBoard();
+                enemyBoardGame();
+
+              //  drawLabelInGame();
+            }
+            else {
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Attention c'est le tour du boss ");
+                alert.setContentText("Attention c'est le tour du boss");
+                alert.showAndWait();
+
+                resetEnemyBoard();
+
+                // on place le boss
+            }
 
 
+            // reset du board ennemy et choix Potion / Food
+        }
     }
 
 
@@ -534,34 +675,46 @@ public class GUIControler {
    private void drawAfterFightEnemy(Combatant c, int col, int row){
         Node myNode = null ;
 
-        if (!c.isAlive()){
+        if (!c.isAlive())
+        {
             // il est mort
-            drawImage(RIP_FILE, col, row);
+         //   drawImage(RIP_FILE, col, row);
 
             Image myImageTmp = new Image(getClass().getResourceAsStream(RIP_FILE), 125, 125, true, true);
             ImageView myImageView = new ImageView(myImageTmp);
             GridPane gridpane = (GridPane)getNodeFromGridPane(myBoardGame, col, (row));
             gridpane.getChildren().remove(0);
             gridpane.add(myImageView, 0, 0);
-            myBoardGame.add(gridpane, col, row);
-
         }
 
         myNode = getNodeFromGridPane(myBoardGame, col, (row+1));
 
-       LOGGER.warn("col=" + col + " row=" + row);
-       LOGGER.warn("myNode=" + myNode );
-
-       Label myLabel = (Label) myNode;
-
+        Label myLabel = (Label) myNode;
         myLabel.setText(c.toString());
+        LOGGER.warn("drawAfterFightEnemy nouveau text du hero : " + c.toString());
+    }
 
-       LOGGER.warn("le combatant = " + c.toString());
+    private void resetEnemyBoard(){
 
-        myLabel.setText(c.toString());
+        for (int i = 0; i < 4; i++) {    // on efface le board,si marche pas mettre 4
+            try {
+
+                GridPane gridpane = (GridPane) getNodeFromGridPane(myBoardGame, i, 0);
+                LOGGER.warn("------gridpane : " + gridpane.getChildren().getClass() + " i = " + i + " row=0");
+
+                gridpane.getChildren().remove(0);
+
+                LOGGER.warn("gridpane : " + gridpane.getChildren() + " i = " + i + " row=0");
+
+                Label myLabel = (Label) getNodeFromGridPane(myBoardGame, i, 1);
+                myLabel.setText(null);
+
+
+            } catch (Exception e) {
+                LOGGER.warn("resetEnemyBoard : " + e.toString());
+            }
         }
-
-
+     }
     @FXML
     protected void onActionButtonSpecial(ActionEvent event) {
         //on a le personnage de selectionné
@@ -569,88 +722,61 @@ public class GUIControler {
         int positionDeLennemi = trouverUnEnnemy();    // position d'un ennemi vivant dans le tableau myEnemies
         Enemy myEnnemy = null;
 
-        if (myAttackListEnCours==null || (myAttackListEnCours.size()==0)) {
-            myAttackListEnCours = new ArrayList<Combatant>(myAttackList);   // la liste de mes combatants, si vide prend la liste initiale
-        }
 
         Combatant ctmp = myAttackListEnCours.get(0);
-        if (ctmp==null || ! ctmp.isAlive()){
-            bFinDuJeu = true;
-        }
-        else {
-            if (ctmp.getMyName().equals(Combatant.S_HUNTER)) {
-                // on décoche une flèche sur l'ennemi
-                myEnnemy = (Enemy) myEnemies[positionDeLennemi];
-                ctmp.doMyAction(Constant.ACTION_SHOOT, 20, myEnnemy);
-                myEnemies[positionDeLennemi] = myEnnemy;
-                drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0);
 
-                if (ctmp.getPosition()<2){
-                    drawAfterFightEnemy(ctmp, ctmp.getPosition(), 3);
-                } else {
-                    drawAfterFightEnemy(ctmp, ctmp.getPosition()+1, 3);
-                }
+        if (ctmp.getMyName().equals(Combatant.S_HUNTER)) {
+            // on décoche une flèche sur l'ennemi
+            myEnnemy = (Enemy) myEnemies[positionDeLennemi];
+            ctmp.doMyAction(Constant.ACTION_SHOOT, 20, myEnnemy);
+            myEnemies[positionDeLennemi] = myEnnemy;
+            drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0);
 
-            }else if(ctmp.getMyName().equals(Combatant.S_MAGE)) {
-                // on lance un sort sur l'ennemi
-                myEnnemy = (Enemy) myEnemies[positionDeLennemi];
-                Mage myMage = (Mage) ctmp;
-                ctmp.doMyAction(Constant.ACTION_CAST, myMage.getMaxMagicPoints(), myEnnemy);
-                myEnemies[positionDeLennemi] = myEnnemy;
-                drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0);
+            if (ctmp.getPosition()<2){
+                drawAfterFightEnemy(ctmp, ctmp.getPosition(), 3);
+            } else {
+                drawAfterFightEnemy(ctmp, ctmp.getPosition()+1, 3);
+            }
 
-                if (ctmp.getPosition()<2){
-                    drawAfterFightEnemy(ctmp, ctmp.getPosition(), 3);
-                } else {
-                    drawAfterFightEnemy(ctmp, ctmp.getPosition()+1, 3);
-                }
+        }else if(ctmp.getMyName().equals(Combatant.S_MAGE)) {
+            // on lance un sort sur l'ennemi
+            myEnnemy = (Enemy) myEnemies[positionDeLennemi];
+            Mage myMage = (Mage) ctmp;
+            ctmp.doMyAction(Constant.ACTION_CAST, myMage.getMaxMagicPoints(), myEnnemy);
+            myEnemies[positionDeLennemi] = myEnnemy;
+            drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0);
 
-            }else if(ctmp.getMyName().equals(Combatant.S_HEALER)) {
-                // on soigne un allié
-                int positionDeLally = trouverUnAlly();
-                LOGGER.warn("positionDeLally = " + positionDeLally);
-                Combatant myAlly =(Combatant) myHeroes[positionDeLally];
-                LOGGER.warn("myAlly=" + ctmp+ toString());
-                Healer myHealer = (Healer) ctmp;
-                ctmp.doMyAction(Constant.ACTION_HEAL,myHealer.getMaxMagicPoints(), myAlly);
-                myHeroes[positionDeLally] = myAlly;
+            if (ctmp.getPosition()<2){
+                drawAfterFightEnemy(ctmp, ctmp.getPosition(), 3);
+            } else {
+                drawAfterFightEnemy(ctmp, ctmp.getPosition()+1, 3);
+            }
+
+        }else if(ctmp.getMyName().equals(Combatant.S_HEALER)) {
+            // on soigne un allié
+            int positionDeLally = trouverUnAlly();
+            LOGGER.warn("positionDeLally = " + positionDeLally);
+            Combatant myAlly =(Combatant) myHeroes[positionDeLally];
+            LOGGER.warn("myAlly=" + ctmp+ toString());
+            Healer myHealer = (Healer) ctmp;
+            ctmp.doMyAction(Constant.ACTION_HEAL,myHealer.getMaxMagicPoints(), myAlly);
+            myHeroes[positionDeLally] = myAlly;
 
 
-                if (positionDeLennemi<2){
-                    drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 3);
-                } else {
-                    drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi+1, 3);
-                }
+            if (positionDeLennemi<2){
+                drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 3);
+            } else {
+                drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi+1, 3);
             }
         }
 
-        if(bFinDesAttaques || (bFinDelaManche))
+
+        heroTurn();
+        if (bFinDesAttaques)
         {
-            // on affiche le message de fin de jeu
-            // on affiche le message de fin de jeu
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Fin de la manche ");
-            alert.setHeaderText("Fin de la manche");
-            alert.setContentText("Fin de la manche");
-            alert.showAndWait();
-
             ennemyAttack();
-        } else if (bFinDuJeu){
-            // on affiche le message de fin de jeu
-            // on affiche le message de fin de jeu
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Fin du jeu");
-            alert.setHeaderText("Fin du jeu");
-            alert.setContentText("Fin du jeu");
-            alert.showAndWait();
-
 
         }
-        else {
-            heroTurn();
-        }
-
-
 
     }
 
@@ -661,17 +787,14 @@ public class GUIControler {
         Combatant ctmp =myAttackList.get(attaquantEnCours);
         ctmp.doMyAction(Constant.ACTION_DEFENSE, 0, null);
 
-
-        for (Combatant c : myAttackList){
-            LOGGER.warn("je defends : " + c.toString() +" mydefense="+c.isDefending());
-        }
         heroTurn();
 
 
-        if(bFinDesAttaques || (bFinDelaManche))
+        if (bFinDesAttaques)
         {
             ennemyAttack();
-        } else if (bFinDuJeu){}
+
+        }
 
     }
     private void resetDefense(){
@@ -689,21 +812,17 @@ public class GUIControler {
         Enemy myEnnemy = null;
 
         try{
-            if (myAttackListEnCours==null || (myAttackListEnCours.size()==0)) {
-                myAttackListEnCours = new ArrayList<Combatant>(myAttackList);   // la liste de mes combatants, si vide prend la liste initiale
-            }
-
-            Combatant ctmp = myAttackListEnCours.get(0);
-
-            LOGGER.warn("-->l'attaquant est : " + ctmp.toString());
+            Combatant ctmp = myAttackListEnCours.get(0);   // l'allié qui va attaquer
 
             myEnnemy = (Enemy) myEnemies[positionDeLennemi];
+
+            LOGGER.warn("-->l'attaquant : " + ctmp.toString() + " va attquer l'ennemi : " + myEnnemy.toString());
 
             ctmp.doMyAction(Constant.ACTION_MEELE_ATTACK, ctmp.getMaxAttackPoints(), myEnnemy);
 
             myEnemies[positionDeLennemi] = myEnnemy;
 
-            // on met à jour l'affichage
+            // on met à jour l'affichage de l'ennemi
             drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0 );
 
             LOGGER.warn("-->l'ennemi après l'attaque : " + myEnnemy.toString());
@@ -714,6 +833,12 @@ public class GUIControler {
 
         heroTurn();
 
+        if (bFinDesAttaques)
+        {
+            ennemyAttack();
+
+        }
+/**
         if(bFinDesAttaques || (bFinDelaManche))
         {
             // on affiche le message de fin de jeu
@@ -735,11 +860,11 @@ public class GUIControler {
         else {
             heroTurn();
         }
-
+*/
     }
     @FXML
     protected void onActionButtonFood(ActionEvent event) {
-        Combatant ctmp =myAttackList.get(attaquantEnCours);
+        Combatant ctmp =myAttackListEnCours.get(attaquantEnCours);
         Hero my = (Hero)ctmp;
         Food myFood = my.getMyFood();
         myFood.updateQuantity(-1);
@@ -747,10 +872,11 @@ public class GUIControler {
         drawAfterFightEnemy(ctmp, attaquantEnCours, 3);
         heroTurn();
 
-        if(bFinDesAttaques || (bFinDelaManche))
+        if (bFinDesAttaques)
         {
             ennemyAttack();
-        } else if (bFinDuJeu){}
+
+        }
 
     }
     @FXML
@@ -758,7 +884,7 @@ public class GUIControler {
         // on a le personnage de sélectionné
         // on va boire une potion
 
-        Combatant ctmp =myAttackList.get(attaquantEnCours);
+        Combatant ctmp =myAttackListEnCours.get(attaquantEnCours);
 
         if(ctmp.getClass().equals(Mage.class)){
             Mage my = (Mage)ctmp;
@@ -777,11 +903,12 @@ public class GUIControler {
         drawAfterFightEnemy(ctmp, attaquantEnCours, 3);
         heroTurn();
 
-
-        if(bFinDesAttaques || (bFinDelaManche))
+        if (bFinDesAttaques)
         {
             ennemyAttack();
-        } else if (bFinDelaManche){}
+
+        }
+
 
     }
 
@@ -851,6 +978,12 @@ public class GUIControler {
 
         prepareBoardGame();
         enemyBoardGame();
+
+        myAttackList = Arrays.asList(myHeroes);
+        Collections.shuffle(myAttackList);
+        myAttackList.toArray(myHeroes);   // on mélange les héros, ca servira pour tous les combats
+
+        myAttackListEnCours = new ArrayList<>(myAttackList);
 
         // décide de l'ordre d'attaque
         startFight();
@@ -955,3 +1088,11 @@ public class GUIControler {
     }
 
 }
+
+
+/**+
+ * petit bug affichage label ennemi
+ * implemente le boss
+ * recuperer les actions a la fin d'un match Rest / attack
+ * ecran victoire
+ */

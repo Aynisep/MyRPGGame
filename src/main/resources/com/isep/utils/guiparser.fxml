@@ -115,6 +115,61 @@
              </children>
 
          </GridPane>
+
+          <GridPane fx:id="myHeroesCare"  alignment="CENTER" gridLinesVisible="true" layoutX="0.0" layoutY="0.0" prefHeight="540.0" prefWidth="766.0" visible="false">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0" minWidth="10.0" prefWidth="163.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="181.0" minWidth="10.0" prefWidth="181.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="96.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="61.0" minHeight="0.0" prefHeight="52.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="56.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+              <children>
+                  <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 1" />
+                  <Label alignment="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 2" GridPane.rowIndex="1" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 3" GridPane.rowIndex="2" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0" prefWidth="100.0" text="Héros 4" GridPane.rowIndex="3" />
+                  <ChoiceBox fx:id="cbHeroCare1" prefHeight="25.0" prefWidth="153.0" value="Rest" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                      <items>
+                          <FXCollections fx:factory="observableArrayList">
+                              <String fx:value="Rest" />
+                              <String fx:value="+1 Attack" />
+                          </FXCollections>
+                      </items>
+                  </ChoiceBox>
+                  <ChoiceBox fx:id="cbHeroCare2" prefHeight="25.0" prefWidth="153.0" value="Rest" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                      <items>
+                          <FXCollections fx:factory="observableArrayList">
+                              <String fx:value="Rest" />
+                              <String fx:value="+1 Attack" />
+                          </FXCollections>
+                      </items>
+                  </ChoiceBox>
+
+                  <ChoiceBox fx:id="cbHeroCare3" prefHeight="25.0" prefWidth="153.0" value="Rest" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                      <items>
+                          <FXCollections fx:factory="observableArrayList">
+                              <String fx:value="Rest" />
+                              <String fx:value="+1 Attack" />
+                          </FXCollections>
+                      </items>
+                  </ChoiceBox>
+
+                  <ChoiceBox fx:id="cbHeroCare4" prefHeight="25.0" prefWidth="153.0" value="Rest" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                      <items>
+                          <FXCollections fx:factory="observableArrayList">
+                              <String fx:value="Rest" />
+                              <String fx:value="+1 Attack" />
+                          </FXCollections>
+                      </items>
+                  </ChoiceBox>
+              </children>
+          </GridPane>
+
+
       </children>
    </Pane>
 
