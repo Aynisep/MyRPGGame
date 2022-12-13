@@ -596,7 +596,6 @@ public class GUIControler {
                     bPotion.setDisable(true);
                 }
             }
-
         }
         catch (Exception e)
         {
