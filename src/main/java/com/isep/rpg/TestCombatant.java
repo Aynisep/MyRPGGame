@@ -13,7 +13,7 @@ import java.util.List;
 
 
 /**
- * Classe de test pour vérifier les différents types d'actions
+ * Classe de test pour vérifier les differents types d'actions
  */
 public class TestCombatant {
 

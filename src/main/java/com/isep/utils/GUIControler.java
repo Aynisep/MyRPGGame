@@ -3,6 +3,7 @@ package com.isep.utils;
 import com.isep.rpg.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javafx.fxml.*;
@@ -15,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 
 import java.util.*;
-import java.util.function.LongPredicate;
 
 public class GUIControler {
     @FXML
@@ -36,7 +36,20 @@ public class GUIControler {
     private ChoiceBox cbHero4;
 
     @FXML
+    private ChoiceBox cbHeroCare1;
+    @FXML
+    private ChoiceBox cbHeroCare2;
+    @FXML
+    private ChoiceBox cbHeroCare3;
+    @FXML
+    private ChoiceBox cbHeroCare4;
+
+    @FXML
     private GridPane myBoardGame;
+
+    @FXML
+    private VBox vbMyHeroesCare; // contient les options de mise à jour des héros après une manche
+
     @FXML
     private Button bAttack;
     @FXML
@@ -75,6 +88,11 @@ public class GUIControler {
     private final static String RIP_FILE = "rip.png";
     private final static String COLOR_BACKGROUND = "#FFCCCC";
 
+    private final static String ACTION_CARE_RESET = "Rest";
+
+    private final static String ACTION_CARE_ATTACK = "+1 Attack";
+
+
     private boolean bFinDesAttaques = false;
     private boolean bFinDelaManche = false;
     private boolean bFinDuJeu = false;
@@ -89,31 +107,48 @@ public class GUIControler {
     private int nbCombatsEffectues = 0;
     private final String[][] hero = {{"Warrior", WARRIOR_FILE}, {"Hunter", HUNTER_FILE}, {"Mage", MAGE_FILE}, {"Healer", HEALER_FILE}};
 
+    /**
+     * Affiche l'image du combatant
+     * @param myImage : l'image qui correspond au combatant
+     * @param column la colonne où est affiché le combatant
+     * @param row la ligne où sont affichées les statistiques du combatant
+     */
     private void drawImage(String myImage, int column, int row) {
-
         GridPane gridpane = null;
         Image myImageTmp = null;
         ImageView myImageView = null;
 
        try{
-            myImageTmp = new Image(getClass().getResourceAsStream(myImage), 125, 125, true, true);
-            myImageView = new ImageView(myImageTmp);
+            myImageTmp = new Image(getClass().getResourceAsStream(myImage), 120, 120, true, true);
+
            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, column, (row));
-           gridpane.getChildren().remove(0);
-           gridpane.add(myImageView, 0, 0);
+
+           if (gridpane.getChildren()!= null && (gridpane.getChildren().size() > 0)) {
+               myImageView = (ImageView) gridpane.getChildren().get(0);
+               myImageView = new ImageView(myImageTmp);           }
+           else {
+               gridpane = new GridPane();
+               gridpane.add(new ImageView(myImageTmp), 0, 0);
+               myBoardGame.add(gridpane, column, row);
+           }
        }
        catch(Exception e) {
            gridpane = new GridPane();
-           gridpane.add(myImageView, 0, 0);
+           gridpane.add(new ImageView(myImageTmp), 0, 0);
            myBoardGame.add(gridpane, column, row);
        }
     }
 
+    /**
+     * Affiche les statistiques du combatant
+     * @param myHero : le combatant ami ou ennemi
+     * @param colunm la colonne où est affiché le combatant
+     * @param row la ligne où sont affichées les statistiques du combatant
+     */
     private void drawLabel(Object myHero, int colunm, int row) {
 
         Node myNode = getNodeFromGridPane(myBoardGame, colunm, (row));
         if (myNode != null  && myNode.getClass().equals(Label.class)) {
-            LOGGER.warn("---------------------- labbel existe deja" + ((Label)myNode).getText());
             ((Label) myNode).setText(myHero.toString());
             myNode = null;
        //     myBoardGame.getChildren().remove(0);
@@ -125,8 +160,7 @@ public class GUIControler {
 
     }
 
-
-        private void prepareBoardGame() {
+    private void prepareBoardGame() {
         myHeroes = new Combatant[Integer.parseInt(cbNumberOfHeroes.getValue().toString())];
         if (cbHero1.getValue().toString().equalsIgnoreCase(hero[0][0])) {
             myHeroes[0] = new Warrior(200, 125, 20, 5, 15, 0);
@@ -194,23 +228,37 @@ public class GUIControler {
         }
     }
 
-    protected void enemyBoardGame() {
+    private void enemyOrcBoardGame() {
         Random nbEnnemy = new Random();
-        int nb = nbEnnemy.nextInt(5);
-        if (nb==0){
-            nb = 1;
+        int nbOfEnnemies = nbEnnemy.nextInt(5);
+        if (nbOfEnnemies==0){
+            nbOfEnnemies = 1;
         }
 
-        myEnemies = new Enemy[nb];
+        buildEnnemyBoardGame(nbOfEnnemies, Combatant.S_ORC);
+    }
 
-        for (int i= 0; i < nb; i++) {
+    private void enemyTrollKingBoardGame() {
+        buildEnnemyBoardGame(1, Combatant.S_TROLL);
+    }
+    private void buildEnnemyBoardGame(int nbOfEnnemies, String ennemyType) {
+        myEnemies = new Enemy[nbOfEnnemies];
 
+        for (int i= 0; i < nbOfEnnemies; i++) {
+
+            if (ennemyType.equalsIgnoreCase(Combatant.S_ORC) ){
                 myEnemies[i] = new Orc(200, 25, 20);
                 drawImage(ORC_FILE, i,0);
                 drawLabel(myEnemies[i], i, 1);
+            }
+            else {
+                myEnemies[i] = new TrollKing(300,15,100);
+                drawImage(TROLLKING_FILE, i,0);
+                drawLabel(myEnemies[i], i, 1);
+            }
         }
-
     }
+
 
     /**
      * décide de l'ordre d'attaque
@@ -299,7 +347,7 @@ public class GUIControler {
 
                 int positionDansLaListe = trouverUnAlly();
                 if (positionDansLaListe<0){
-                    // mettre un ecran de perdu  #TODO
+                    // mettre un ecran de perdu  #TODO y a un popup de perdu
                     resetDefense();
                 }
 
@@ -445,9 +493,8 @@ public class GUIControler {
 
     }
 
-    private void heroTurn() {
+    private void startHeroTurn() {
         try{
-
             /// a verifier sauvegarde de la liste d'attaque initiale
 
             Combatant currentCombatant = myAttackListEnCours.get(0);
@@ -468,9 +515,6 @@ public class GUIControler {
                 gridpane.setStyle("-fx-background-color: #f5f4f5;");
                 bFirstAttackOfTheTurn = false;
             }
-            else {
-
-            }
 
             currentCombatant = myAttackListEnCours.get(0);
 
@@ -484,27 +528,21 @@ public class GUIControler {
                 myCurrentColumn++;
             }
 
-
-            // on remet le background a blanc
+           // on remet le background a blanc
             Node myNode = getNodeFromGridPane(myBoardGame, myCurrentColumn, 3);
             GridPane gridpane = (GridPane)myNode;
             gridpane.setStyle("-fx-background-color: #f5f4f5;");
 
             Combatant newCombatant  = null;
 
-
-
             boolean bStop = false;
             int iCounter = myAttackListEnCours.size();
-
-
 
             if (iCounter==0)
             {
                 bFinDesAttaques = true;  // on passe a l'ennemi
             }
             else {
-
                 int i = 0;
                 while (!bStop && (i <= iCounter)) {
                     if (myAttackListEnCours.get(i) != null && myAttackListEnCours.get(i).isAlive()) {
@@ -515,9 +553,6 @@ public class GUIControler {
                 }
 
                 myCurrentColumn = newCombatant.getPosition();
-
-                LOGGER.warn("--------------------le prochain combatant : " + newCombatant.toString());
-
 
                 if (myCurrentColumn >= 2) {
                     myCurrentColumn++;
@@ -571,37 +606,136 @@ public class GUIControler {
 
         bFinDelaManche = !isEnnemyAlive();
 
+        Alert alert = null;
+
         if (bFinDelaManche) {
-            // on a gagne la manche
-            // on a perdu la partie
-            // on affiche le message de fin de jeu
-            // on affiche le message de fin de jeu
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Fin de la manche, Vous avez gagné cette manche ");
-            alert.setContentText("Vous avez gagné cette manche");
-            alert.showAndWait();
-
             nbOfTurn++;
-            if (nbOfTurn<this.NB_TOUR_MAX){
-                resetEnemyBoard();
-                enemyBoardGame();
+            if (nbOfTurn<NB_TOUR_MAX){
+        //    if (nbOfTurn<1){   // pour les tests on ne fait que 1 tour avant le boss  // TODO : a enlever
 
-              //  drawLabelInGame();
+                LOGGER.warn("on cache les écrans pour les mises à jour des personnages");
+                myHeroesList.setVisible(false);
+                myBoardGame.setVisible(false);
+
+                    vbMyHeroesCare.setStyle("-fx-background-color:#cef76f");
+
+                // on recherche les vivants
+                int compteur = 0;
+                Combatant c[] =  myHeroes;
+
+                 if (c!=null) {
+                    for (int i=0;i<c.length;i++) {
+                        LOGGER.warn("-----------------------> Ally en cours " + c[i]);
+
+                        switch (c[i].getPosition()){
+                            case 0 : cbHeroCare1.setDisable(!c[i].isAlive()) ;
+                                break;
+                            case 1 : cbHeroCare2.setDisable(!c[i].isAlive()) ;
+                                break;
+                            case 2 : cbHeroCare3.setDisable(!c[i].isAlive()) ;
+                                break;
+                            case 3 : cbHeroCare4.setDisable(!c[i].isAlive()) ;
+                                break;                            
+                        }
+                    }
+                }
+
+                vbMyHeroesCare.setVisible(true);
+
+            }
+            else if (!bFinDuJeu){
+
+                LOGGER.warn("on cache les écrans pour les mises à jour des personnages");
+                myHeroesList.setVisible(false);
+                myBoardGame.setVisible(false);
+
+          //      vbMyHeroesCare.setStyle("-fx-background-color:#cef76f");
+
+                // on recherche les vivants
+                int compteur = 0;
+                Combatant c[] =  myHeroes;
+
+                if (c!=null) {
+                    for (int i=0;i<c.length;i++) {
+                        LOGGER.warn("Ally en cours " + c[i]);
+
+                        switch (c[i].getPosition()){
+                            case 0 : cbHeroCare1.setDisable(!c[i].isAlive()) ;
+                                break;
+                            case 1 : cbHeroCare2.setDisable(!c[i].isAlive()) ;
+                                break;
+                            case 2 : cbHeroCare3.setDisable(!c[i].isAlive()) ;
+                                break;
+                            case 3 : cbHeroCare4.setDisable(!c[i].isAlive()) ;
+                                break;
+                        }
+                    }
+                }
+
+                vbMyHeroesCare.setVisible(true);
+                bFinDuJeu=true;
             }
             else {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Attention c'est le tour du boss ");
-                alert.setContentText("Attention c'est le tour du boss");
-                alert.showAndWait();
-
-                resetEnemyBoard();
-
-                // on place le boss
+                // on a fini
+                  alert = new Alert(Alert.AlertType.CONFIRMATION);
+                  alert.setTitle("Vous avez gagné le jeu ");
+                  alert.setContentText("Vous avez gagné le jeu");
+                  alert.showAndWait();
+                  System.exit(0);
             }
 
 
             // reset du board ennemy et choix Potion / Food
         }
+    }
+
+    @FXML
+    protected void onActionButtonMiseAJourCare(Event e){
+
+        // on met à jour tous les personnages
+        for (Combatant c : myHeroes){
+            if (c!=null && c.isAlive()) {
+                LOGGER.warn("avant mise a jour du personnage [["+ c.toString()+"]");
+
+                if (cbHeroCare1.getValue().toString().equalsIgnoreCase(ACTION_CARE_RESET)){
+                    c.setHealthPoints(c.getMaxHealthPoints());
+                }
+                else {
+                    c.setMaxAttackPoints(c.getMaxAttackPoints()+1);
+                }
+
+                LOGGER.warn("apres mise à jour du personnage [["+ c.toString()+"]" );
+
+                int myPositon = c.getPosition();
+                if (myPositon>= 2) {
+                    myPositon++;
+                }
+                drawLabel(c, myPositon, 4) ;
+            }
+        }
+
+        // on doit rafraichir l'affichage des heros
+        // on reselection le premier dans les checkbox
+        cbHeroCare1.setValue(ACTION_CARE_RESET);
+        cbHeroCare2.setValue(ACTION_CARE_RESET);
+        cbHeroCare3.setValue(ACTION_CARE_RESET);
+        cbHeroCare4.setValue(ACTION_CARE_RESET);
+
+        resetEnemyBoard();
+
+//        if (nbOfTurn<1){   // pour test de debug on ne fait que 1 tour avant le boss  // TODO : a enlever
+        if (nbOfTurn<NB_TOUR_MAX){
+            enemyOrcBoardGame();
+        }
+        else{
+            enemyTrollKingBoardGame();
+        }
+
+        resetAllyBoard();
+        myHeroesList.setVisible(false);
+        vbMyHeroesCare.setVisible(false);
+        myBoardGame.setVisible(true);
+
     }
 
 
@@ -673,48 +807,155 @@ public class GUIControler {
         return (position);
    }
    private void drawAfterFightEnemy(Combatant c, int col, int row){
-        Node myNode = null ;
+       Node myNode = null ;
+       Image myImageTmp = null;
+       String imageName = null;
 
-        if (!c.isAlive())
+       if (!c.isAlive())
         {
             // il est mort
-         //   drawImage(RIP_FILE, col, row);
+            imageName = RIP_FILE;
+        }
+       else {
+           if (c.getMyName().equalsIgnoreCase(Combatant.S_WARRIOR)) {
+               imageName = WARRIOR_FILE;
+           } else if (c.getMyName().equalsIgnoreCase(Combatant.S_HEALER) ){
+               imageName = HEALER_FILE;
+           } else if (c.getMyName().equalsIgnoreCase(Combatant.S_MAGE)) {
+               imageName = MAGE_FILE;
+           } else if (c.getMyName().equalsIgnoreCase(Combatant.S_HUNTER)) {
+               imageName = HUNTER_FILE;
+           } else if (c.getMyName().equalsIgnoreCase(Combatant.S_ORC)) {
+               imageName = ORC_FILE;
+           } else if (c.getMyName().equalsIgnoreCase(Combatant.S_TROLL)) {
+               imageName = TROLLKING_FILE;
+           }
+           else {
+               LOGGER.error("combatant inconnu, on considere qu'il est mort");
+               imageName = RIP_FILE;
+           }
+       }
 
-            Image myImageTmp = new Image(getClass().getResourceAsStream(RIP_FILE), 125, 125, true, true);
-            ImageView myImageView = new ImageView(myImageTmp);
-            GridPane gridpane = (GridPane)getNodeFromGridPane(myBoardGame, col, (row));
-            gridpane.getChildren().remove(0);
-            gridpane.add(myImageView, 0, 0);
+       myImageTmp = new Image(getClass().getResourceAsStream(imageName), 120, 120, true, true);
+
+       ImageView myImageView = null;
+       GridPane gridpane = (GridPane)getNodeFromGridPane(myBoardGame, col, (row));
+       LOGGER.warn("col = "+col+" row = "+row);
+       if (gridpane==null){
+           LOGGER.warn("-- la grid est nulle c'est bizarre ");
+           gridpane = new GridPane();
+       }
+
+       if((gridpane.getChildren()!=null)) {
+           //  TBD : il faut supprimer l'ancien
+           gridpane.getChildren().remove(0);
+           gridpane.getChildren().add(new ImageView(new Image(getClass().getResourceAsStream(imageName), 120, 120, true, true)));
+        }
+        else{
+          gridpane.add(new ImageView(new Image(getClass().getResourceAsStream(imageName), 120, 120, true, true)), col, (row));
         }
 
         myNode = getNodeFromGridPane(myBoardGame, col, (row+1));
-
-        Label myLabel = (Label) myNode;
-        myLabel.setText(c.toString());
-        LOGGER.warn("drawAfterFightEnemy nouveau text du hero : " + c.toString());
+       LOGGER.warn("-- myNode 11111111111111111111 " + myNode);
+       if (myNode != null){
+            ((Label)myNode).setText(c.toString());
+        }
     }
 
     private void resetEnemyBoard(){
 
-        for (int i = 0; i < 4; i++) {    // on efface le board,si marche pas mettre 4
+        /**for (int i = 0; i < 4; i++) {    // on efface le board, si marche pas mettre 4
             try {
 
                 GridPane gridpane = (GridPane) getNodeFromGridPane(myBoardGame, i, 0);
-                LOGGER.warn("------gridpane : " + gridpane.getChildren().getClass() + " i = " + i + " row=0");
+                try{
+                    gridpane.getChildren().removeAll();
+                } catch (Exception e) {
 
-                gridpane.getChildren().remove(0);
-
-                LOGGER.warn("gridpane : " + gridpane.getChildren() + " i = " + i + " row=0");
+                }
 
                 Label myLabel = (Label) getNodeFromGridPane(myBoardGame, i, 1);
-                myLabel.setText(null);
-
-
+                if (myLabel!=null){
+                    myLabel.setText("");
+                }
             } catch (Exception e) {
                 LOGGER.warn("resetEnemyBoard : " + e.toString());
             }
+        }**/
+        try {
+            GridPane gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 0, 0);
+            if ( gridpane!=null && gridpane.getChildren()!=null) {
+                LOGGER.warn("11111111111111111111111111 " + gridpane.getChildren());
+                gridpane.getChildren().remove(0);
+                LOGGER.warn("11111111111111111111111111 " + gridpane.getChildren());
+            }
+
+            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 1, 0);
+            if ( gridpane!=null && gridpane.getChildren()!=null) {
+                LOGGER.warn("22222222222222222222222222 " + gridpane.getChildren());
+                gridpane.getChildren().remove(0);
+                LOGGER.warn("22222222222222222222222222 " + gridpane.getChildren());
+            }
+            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 2, 0);
+            if ( gridpane!=null && gridpane.getChildren()!=null) {
+                LOGGER.warn("33333333333333333333333333 " + gridpane.getChildren());
+                gridpane.getChildren().remove(0);
+                LOGGER.warn("33333333333333333333333333 " + gridpane.getChildren());
+            }
+            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 3, 0);
+            if ( gridpane!=null && gridpane.getChildren()!=null) {
+                LOGGER.warn("44444444444444444444444444 " + gridpane.getChildren());
+                gridpane.getChildren().remove(0);
+                LOGGER.warn("44444444444444444444444444 " + gridpane.getChildren());
+            }
+
+
+            Label myLabel = (Label) getNodeFromGridPane(myBoardGame, 0, 1);
+            myLabel.setText("");
+            myLabel = (Label) getNodeFromGridPane(myBoardGame, 1, 1);
+            myLabel.setText("");
+            myLabel = (Label) getNodeFromGridPane(myBoardGame, 2, 1);
+            myLabel.setText("");
+            myLabel = (Label) getNodeFromGridPane(myBoardGame, 3, 1);
+            myLabel.setText("");
+
+        } catch (Exception e) {
+            LOGGER.warn("resetEnemyBoard : " + e.toString());
         }
-     }
+    }
+
+
+
+
+
+    private void resetAllyBoard(){
+
+        for (Combatant c : myHeroes) {    // on efface le board,si marche pas mettre 4
+            try {
+                int position = c.getPosition();
+                if (position>=2){
+                    position++;
+                }
+
+                if (c.isAlive()){
+                    if (c.getMyName().equalsIgnoreCase(Combatant.S_WARRIOR)) {
+                        drawImage(WARRIOR_FILE, position, 3);
+                    }
+                    else if (c.getMyName().equalsIgnoreCase(Combatant.S_HEALER) ){
+                        drawImage(HEALER_FILE, position, 3);
+                    } else if (c.getMyName().equalsIgnoreCase(Combatant.S_MAGE)) {
+                        drawImage(MAGE_FILE, position, 3);
+                    } else if (c.getMyName().equalsIgnoreCase(Combatant.S_HUNTER)) {
+                        drawImage(HUNTER_FILE, position, 3);
+                    }
+                }
+                else {
+                    drawImage(RIP_FILE, position, 3);
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
     @FXML
     protected void onActionButtonSpecial(ActionEvent event) {
         //on a le personnage de selectionné
@@ -754,24 +995,25 @@ public class GUIControler {
 
         }else if(ctmp.getMyName().equals(Combatant.S_HEALER)) {
             // on soigne un allié
-            int positionDeLally = trouverUnAlly();
-            LOGGER.warn("positionDeLally = " + positionDeLally);
+            int positionDeLally = trouverUnAlly();  // position dans le tableau des ally
+
             Combatant myAlly =(Combatant) myHeroes[positionDeLally];
-            LOGGER.warn("myAlly=" + ctmp+ toString());
+
+            positionDeLally = myAlly.getPosition();   // la position sur le board
+
             Healer myHealer = (Healer) ctmp;
+
             ctmp.doMyAction(Constant.ACTION_HEAL,myHealer.getMaxMagicPoints(), myAlly);
-            myHeroes[positionDeLally] = myAlly;
 
-
-            if (positionDeLennemi<2){
-                drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 3);
+            if (positionDeLally<2){
+                drawAfterFightEnemy(myAlly, positionDeLally, 3);
             } else {
-                drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi+1, 3);
+                drawAfterFightEnemy(myAlly, positionDeLally+1, 3);
             }
         }
 
 
-        heroTurn();
+        startHeroTurn();
         if (bFinDesAttaques)
         {
             ennemyAttack();
@@ -787,7 +1029,7 @@ public class GUIControler {
         Combatant ctmp =myAttackList.get(attaquantEnCours);
         ctmp.doMyAction(Constant.ACTION_DEFENSE, 0, null);
 
-        heroTurn();
+        startHeroTurn();
 
 
         if (bFinDesAttaques)
@@ -797,10 +1039,13 @@ public class GUIControler {
         }
 
     }
+
+    /**
+     * on passe au tour suivant, les combatants qui étaient en position défense perdent leur postion défense pour le tour suivant
+     */
     private void resetDefense(){
         for (Combatant c : myAttackList){
             c.setDefending(false);
-            LOGGER.warn("plus de defense : " + c.toString() +" mydefense="+c.isDefending());
         }
     }
     @FXML
@@ -813,54 +1058,29 @@ public class GUIControler {
 
         try{
             Combatant ctmp = myAttackListEnCours.get(0);   // l'allié qui va attaquer
+            myEnnemy = (Enemy) myEnemies[positionDeLennemi]; // l'ennemi qui va être attaqué
+            LOGGER.warn("-->l'attaquant : " + ctmp.toString() + " va attaquer l'ennemi : " + myEnnemy.toString());
 
-            myEnnemy = (Enemy) myEnemies[positionDeLennemi];
-
-            LOGGER.warn("-->l'attaquant : " + ctmp.toString() + " va attquer l'ennemi : " + myEnnemy.toString());
-
+            // on fait l'attaque
             ctmp.doMyAction(Constant.ACTION_MEELE_ATTACK, ctmp.getMaxAttackPoints(), myEnnemy);
+            LOGGER.warn("-->l'ennemi après l'attaque : " + myEnnemy.toString());
 
-            myEnemies[positionDeLennemi] = myEnnemy;
+            myEnemies[positionDeLennemi] = myEnnemy; // on sauvegarde le changement
 
             // on met à jour l'affichage de l'ennemi
             drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0 );
-
-            LOGGER.warn("-->l'ennemi après l'attaque : " + myEnnemy.toString());
         }
         catch(Exception e){
             LOGGER.error("erreur : " + e.getMessage());
         }
 
-        heroTurn();
+        startHeroTurn();
 
         if (bFinDesAttaques)
         {
             ennemyAttack();
 
         }
-/**
-        if(bFinDesAttaques || (bFinDelaManche))
-        {
-            // on affiche le message de fin de jeu
-            // on affiche le message de fin de jeu
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Fin de la manche ");
-            alert.setContentText("Fin de la manche");
-            alert.showAndWait();
-
-            ennemyAttack();
-        } else if (bFinDuJeu){
-            // on affiche le message de fin de jeu
-            // on affiche le message de fin de jeu
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Fin du jeu");
-            alert.setContentText("Fin du jeu");
-            alert.showAndWait();
-        }
-        else {
-            heroTurn();
-        }
-*/
     }
     @FXML
     protected void onActionButtonFood(ActionEvent event) {
@@ -869,8 +1089,15 @@ public class GUIControler {
         Food myFood = my.getMyFood();
         myFood.updateQuantity(-1);
         ctmp.doMyAction(Constant.ACTION_FOOD, myFood.getPower(), null);
-        drawAfterFightEnemy(ctmp, attaquantEnCours, 3);
-        heroTurn();
+
+        int position = ctmp.getPosition();
+        if (position<2){
+            drawAfterFightEnemy(ctmp, position, 3);
+        } else {
+            drawAfterFightEnemy(ctmp, position+1, 3);
+        }
+
+        startHeroTurn();
 
         if (bFinDesAttaques)
         {
@@ -891,29 +1118,40 @@ public class GUIControler {
             Potion myPotions = my.getMyPotion();
             myPotions.updateQuantity(-1);
             ctmp.doMyAction(Constant.ACTION_POTION, myPotions.getPower(), null);
-            LOGGER.warn("apres avoir bu une potion : " + ctmp.toString());
         } else if(ctmp.getClass().equals(Healer.class)){
             Healer my = (Healer) ctmp;
             Potion myPotions = my.getMyPotion();
             myPotions.updateQuantity(-1);
             ctmp.doMyAction(Constant.ACTION_POTION, myPotions.getPower(), null);
-            LOGGER.warn("apres avoir bu une potion : " + ctmp.toString());
-
         }
-        drawAfterFightEnemy(ctmp, attaquantEnCours, 3);
-        heroTurn();
+
+        int position = ctmp.getPosition();
+        if (position<2){
+            drawAfterFightEnemy(ctmp, position, 3);
+        } else {
+            drawAfterFightEnemy(ctmp, position+1, 3);
+        }
+
+        startHeroTurn();
+
+        LOGGER.warn("apres avoir bu  la potion " + ctmp.toString());
 
         if (bFinDesAttaques)
         {
             ennemyAttack();
-
         }
-
-
     }
 
+    /**
+     * prépare le board, instancie les personnages et lance le jeu pour un maximum de 5 tours
+     * @param event correspond à l'action sur le bouton
+     *
+     * @author  A. N.
+     * @version 1.0
+     */
+
     @FXML
-    protected void onHelloButtonClick(ActionEvent event) {
+    protected void onStartFightButtonClick(ActionEvent event) {
         int nbOfHeroes = 1;
         try {
             nbOfHeroes = Integer.parseInt(cbNumberOfHeroes.getValue().toString());
@@ -964,20 +1202,21 @@ public class GUIControler {
                 cbHero2.setDisable(false);
                 break;
         }
-        LOGGER.warn("apres switch " + nbOfHeroes);
 
+        // on permutte les grid pour afficher les combats
         myHeroesList.setVisible(false);
         myBoardGame.setVisible(true);
 
         bFight.setVisible(false);
         bFight.setDisable(true);
+
         texteSelectionHero.setVisible(false);
         texteSelectionHero.setDisable(true);
         cbNumberOfHeroes.setVisible(false);
         cbNumberOfHeroes.setDisable(true);
 
         prepareBoardGame();
-        enemyBoardGame();
+        enemyOrcBoardGame();
 
         myAttackList = Arrays.asList(myHeroes);
         Collections.shuffle(myAttackList);
@@ -991,8 +1230,17 @@ public class GUIControler {
     }
 
 
-    private ArrayList<ChoiceBox> myCbHeroes = new ArrayList<ChoiceBox>(4);
+    /**
+     * retourne le Node d'un grid pane à l'emplement col / row
+     * @param gridPane : le gridpane a être parcouru
+     * @param col : la colonne
+     * @param row : la ligne
+     * @return le Node trouvé, null si le node n'existe pas
 
+     *
+     * @author  A. N.
+     * @version 1.0
+     */
     private Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
 
 
@@ -1010,16 +1258,17 @@ public class GUIControler {
         return null;
     }
 
-    /**
-     * implementation du listener sur la choix du Héros
-     */
+
     @FXML
+    /**
+     * lis le nombre de héros sélectionnés et active les lignes correspondantes
+     * @param e : l'action du cliquer sur le menu déroulant
+     *
+     * @author  A. N.
+     * @version 1.0
+     */
     protected void onCbButtonClick(Event e) {
 
-        LOGGER.error("onCbButtonClick " + e);
-
-
-        // on recupere la ligne du choix du héros
         int nbOfHeroes = 1;
         try {
             nbOfHeroes = Integer.parseInt(cbNumberOfHeroes.getValue().toString());
@@ -1027,22 +1276,25 @@ public class GUIControler {
             LOGGER.error("erreur de conversion de la chaine en entier");
         }
 
-        LOGGER.warn("------------------- cbHero1 = " + cbHero1 + " cbHero2 = " + cbHero2 + " cbHero3 = " + cbHero3 + " cbHero4 = " + cbHero4);
-
         if (cbHero1 == null || cbHero2 == null || cbHero3 == null || cbHero4 == null) {
             cbHero1 = (ChoiceBox) getNodeFromGridPane(myHeroesList, 1, 0);
             cbHero2 = (ChoiceBox) getNodeFromGridPane(myHeroesList, 1, 1);
             cbHero3 = (ChoiceBox) getNodeFromGridPane(myHeroesList, 1, 2);
             cbHero4 = (ChoiceBox) getNodeFromGridPane(myHeroesList, 1, 3);
-            LOGGER.warn("cbHero1 = " + cbHero1 + " cbHero2 = " + cbHero2 + " cbHero3 = " + cbHero3 + " cbHero4 = " + cbHero4);
+
         }
-        LOGGER.warn("mise à jour de la liste possible de Héros, on a  " + nbOfHeroes + " héros");
+
+        LOGGER.warn("on a sélectionné [" + nbOfHeroes + "] héros pour la partie");
+
+        // on cache les lignes inutiles
         cbHero2.setVisible(false);
         cbHero2.setDisable(true);
         cbHero3.setVisible(false);
         cbHero3.setDisable(true);
         cbHero4.setVisible(false);
         cbHero4.setDisable(true);
+
+        // on affiche les lignes nécessaires
         switch (nbOfHeroes) {
 
             case 4:
@@ -1067,32 +1319,14 @@ public class GUIControler {
                 cbHero2.setDisable(false);
                 break;
         }
-        LOGGER.warn("apres switch " + nbOfHeroes);
     }
 
-    /**
-     * implementation du listener sur la choix du Héros
-     */
-    @FXML
-    protected void myHeroUpdateProfile(Event e) {
-        try {
-            Label labelTitle = new Label("hero 1");
-            TextField fieldUserName = new TextField();
-            fieldUserName.setText("test");
-            GridPane gp = (GridPane) e.getSource();
-            gp.setVisible(true);
-            gp.add(labelTitle, 0, 0);
-            LOGGER.warn("affiche le grid" + gp.isVisible());
-        } catch (Exception ex) {
-        }
-    }
 
 }
 
 
 /**+
- * petit bug affichage label ennemi
- * implemente le boss
- * recuperer les actions a la fin d'un match Rest / attack
- * ecran victoire
+ * petit bug affichage après attaque spéciale d'un heal ou d'un mage affiche mauvais label
+ * un bug sur les attaques a verifier
+ * quand on fait une potion ou un heal on affiche plus les bonnes stats, faut mettre a jour juste la cible
  */

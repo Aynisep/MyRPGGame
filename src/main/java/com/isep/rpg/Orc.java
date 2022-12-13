@@ -66,8 +66,8 @@ public class Orc extends Enemy {
 
     }
 
-    /*
-     * Affiche le contenu de l'objet Combatant
+    /**
+     * Affiche le contenu de l'objet Orc
      */
     @Override
     public String toString() {

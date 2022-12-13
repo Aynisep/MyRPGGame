@@ -48,6 +48,7 @@ public class Mage extends SpellCaster {
      * @param foodQuantity quantite de nourriture a l'initialisation du jeu
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
+     * @param position l'emplacement du combatant dans la liste d'attaques (0 = premier a attaquer)
      */
     public Mage(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) throws ArithmeticException {
 

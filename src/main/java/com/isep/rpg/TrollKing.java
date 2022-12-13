@@ -84,4 +84,17 @@ public class TrollKing extends Enemy {
             myComb.setDefending(false);
         }
     }
+
+    /**
+     * Affiche le contenu de l'objet TrollKing
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer(200) ;
+        sb.append("\tVie = ").append(this.getHealthPoints()).append("\n") ;
+        sb.append("\tAttaque = ").append(this.getMaxAttackPoints()).append("\n") ;
+        sb.append("\tDefense = ").append(this.getDefensePoints()).append("\n") ;
+
+        return sb.toString();
+    }
 }

@@ -34,6 +34,7 @@ public class Hunter extends Hero {
      * @param maxDefensePoints nombre maximun de points de defense a l'initialisation du jeu
      * @param foodQuantity quantite de nourriture a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
+     * @param position l'emplacement du combatant dans la liste d'attaques (0 = premier a attaquer)
      */
     public Hunter(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints,int maxNumberOfArrows,int foodQuantity, int foodPower, int position) throws ArithmeticException {
 

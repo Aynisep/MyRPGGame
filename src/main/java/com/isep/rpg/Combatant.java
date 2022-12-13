@@ -102,6 +102,8 @@ public abstract class Combatant {
 
     public final static String S_MAGE = "Mage" ;
 
+    public final static String S_ORC = "Orc" ;
+    public final static String S_TROLL = "Troll" ;
 
     /**
      *  Constructeur de la classe retourne une exception arithmetique si l'un des arguments est negatif
@@ -115,6 +117,7 @@ public abstract class Combatant {
      * @param foodQuantity quantite de nourriture a l'initialisation du jeu
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
+     * @param position l'emplacement du combatant dans la liste d'attaques (0 = premier a attaquer)
      */
     protected Combatant(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int maxNumberOfArrows, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) {
 
@@ -161,9 +164,9 @@ public abstract class Combatant {
     public String toString() {
         StringBuffer sb = new StringBuffer(200) ;
         sb.append("Classe = ").append(getMyName()).append("\n") ;
-        sb.append("\tPoints de vie = ").append(healthPoints).append("\n") ;
-        sb.append("\tPoints de mana = ").append(manaPoints).append("\n") ;
-        sb.append("\tNombres de fleches = ").append(numberOfArrows).append("\n") ;
+        sb.append("\tVie = ").append(healthPoints).append("\n") ;
+        sb.append("\tMana = ").append(manaPoints).append("\n") ;
+        sb.append("\tFleches = ").append(numberOfArrows).append("\n") ;
         sb.append("\tPoints d'attaque = ").append(attackPoints).append("\n") ;
         sb.append("\tPoints de defense = ").append(defensePoints).append("\n") ;
         return sb.toString();
@@ -360,18 +363,12 @@ public abstract class Combatant {
     public void setManaPoints (int manaPointsFlux){
         this.manaPoints=this.manaPoints+manaPointsFlux ;
 
-        LOGGER.warn ("--------------------Point de mana a la sortie   manaPoints ------>>>>>    =    "+ this.manaPoints) ;
-        LOGGER.warn ("--------------------Point de mana a la sortie   manaPointsFlux ------>>>>>    =    "+ manaPointsFlux) ;
         if (manaPoints<0)  {
-            LOGGER.warn ("--------------------  ici ------>>>>>    =    ") ;
             this.manaPoints=0 ;
         }
         else if (manaPoints>maxManaPoints)  {
-            LOGGER.warn ("--------------------  ici 2 ------>>>>>    =    ") ;
             this.manaPoints=maxManaPoints ;
         }
-        LOGGER.warn ("--------------------  ici 3 ------>>>>>    =    ") ;
-        LOGGER.warn ("--------------------Point de mana a la sortie  ------>>>>>    =    "+ this.getManaPoints()) ;
     }
 
     /**
