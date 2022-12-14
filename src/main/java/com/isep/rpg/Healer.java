@@ -23,6 +23,11 @@ public class Healer extends SpellCaster {
 
     // quantité de potion initiale
     private Potion myPotion = null;
+
+    /**
+     * défnit le type de potion pour ce héro
+     * @param myPotion la valeur de la potion
+     */
     public void setMyPotion(Potion myPotion) {
         this.myPotion = myPotion;
     }
@@ -107,6 +112,11 @@ public class Healer extends SpellCaster {
         }
         return false;
     }
+
+    /**
+     * donner la valeur de la potion et la quantité
+     * @return la potion pour ce héros
+     */
     public Potion getMyPotion(){
         List<Item> myItems = this.getMyItems();
         if (myItems == null){

@@ -16,9 +16,11 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
+/**
+ * classe qui définit le coeur du programme, elle permet de lancer l'application
+ */
 public class GUIParser extends Application {
 
-    private ComboBox cbNbOfHeroes = null;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -30,6 +32,10 @@ public class GUIParser extends Application {
         primaryStage.show();
     }
 
+    /**
+     * fonction prinicpale du programme
+     * @param args aucun argument pris en compte
+     */
     public static void main(String[] args) {
 
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);

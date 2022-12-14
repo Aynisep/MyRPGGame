@@ -95,14 +95,29 @@ public abstract class Combatant {
      * position dans la grid
      */
     private int position ;
-
+    /**
+     * type Healer
+     */
     public final static String S_HEALER = "Healer" ;
+    /**
+     * type Warrior
+     */
     public final static String S_WARRIOR = "Warrior" ;
+    /**
+     * type Hunter
+     */
     public final static String S_HUNTER = "Hunter" ;
-
+    /**
+     * type Mage
+     */
     public final static String S_MAGE = "Mage" ;
-
+    /**
+     * type Orc
+     */
     public final static String S_ORC = "Orc" ;
+    /**
+     * type Troll
+     */
     public final static String S_TROLL = "Troll" ;
 
     /**
@@ -394,7 +409,12 @@ public abstract class Combatant {
     public void setDefending (boolean defending) {
         this.defending = defending ;
     }
-
+    /**
+     * fonction qui sert a l'utilisation d'une action
+     * @param typeOfAction l'action effectuer
+     * @param quantity la quantite de l'action
+     * @param myTarget le target de l'action
+     */
     public void doMyAction(int typeOfAction, int quantity, Combatant myTarget){};
 
 }

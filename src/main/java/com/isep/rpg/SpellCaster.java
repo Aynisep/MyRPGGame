@@ -30,9 +30,12 @@ public  abstract class SpellCaster extends Hero {
         this.maxMagicPoints = maxMagicPoints;
     }
 
-    /*
-     * Affiche le contenu de l'objet Combatant
-     */
+    /**
+     * Affiche le contenu de l'objet SpellCaster
+     * @Override toString de la classe Combatant
+     * @author  A. N.
+     * @version 1.0
+     * */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer(200) ;
@@ -57,6 +60,9 @@ public  abstract class SpellCaster extends Hero {
      * @param foodQuantity quantite de nourriture a l'initialisation du jeu
      * @param potionPower puissance de la potion a l'initialisation du jeu
      * @param foodPower puissance de la nourriture a l'initialisation du jeu
+     * @param position  position du hero sur la grid
+     * @author  A. N.
+     * @version 1.0
      */
     protected SpellCaster(int maxHealthPoints, int maxAttackPoints, int maxDefensePoints, int maxManaPoints, int maxMagicPoints, int numberOfPotions, int potionPower,int foodQuantity, int foodPower, int position) {
 

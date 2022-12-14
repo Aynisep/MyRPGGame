@@ -16,7 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 
 import java.util.*;
-
+/**
+ * Classe qui permet de gerer l'interface graphique du jeu et son déroulement
+ */
 public class GUIControler {
     @FXML
     private Label welcomeText;
@@ -123,9 +125,11 @@ public class GUIControler {
 
            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, column, (row));
 
-           if (gridpane.getChildren()!= null && (gridpane.getChildren().size() > 0)) {
-               myImageView = (ImageView) gridpane.getChildren().get(0);
-               myImageView = new ImageView(myImageTmp);           }
+           if (gridpane != null && gridpane.getChildren() != null) {
+              gridpane.getChildren().removeAll(gridpane.getChildren());
+
+               gridpane.add(new ImageView(myImageTmp), 0, 0);
+           }
            else {
                gridpane = new GridPane();
                gridpane.add(new ImageView(myImageTmp), 0, 0);
@@ -599,7 +603,7 @@ public class GUIControler {
         }
         catch (Exception e)
         {
-            LOGGER.warn("--------------------probleme de miose a jour : " + e.toString());
+            LOGGER.warn("--------------------probleme de mise a jour : " + e.toString());
         }
         LOGGER.warn("------> fin du tour " + bFinDesAttaques);
 
@@ -610,7 +614,6 @@ public class GUIControler {
         if (bFinDelaManche) {
             nbOfTurn++;
             if (nbOfTurn<NB_TOUR_MAX){
-        //    if (nbOfTurn<1){   // pour les tests on ne fait que 1 tour avant le boss  // TODO : a enlever
 
                 LOGGER.warn("on cache les écrans pour les mises à jour des personnages");
                 myHeroesList.setVisible(false);
@@ -688,6 +691,10 @@ public class GUIControler {
         }
     }
 
+    /**
+     * bouton de l'ecran qui permet de mettre a jour les PV des personnages ou leur attaque après une manche gagnée
+     * @param e action sur le bouton
+     */
     @FXML
     protected void onActionButtonMiseAJourCare(Event e){
 
@@ -722,7 +729,6 @@ public class GUIControler {
 
         resetEnemyBoard();
 
-//        if (nbOfTurn<1){   // pour test de debug on ne fait que 1 tour avant le boss  // TODO : a enlever
         if (nbOfTurn<NB_TOUR_MAX){
             enemyOrcBoardGame();
         }
@@ -830,7 +836,7 @@ public class GUIControler {
                imageName = TROLLKING_FILE;
            }
            else {
-               LOGGER.error("combatant inconnu, on considere qu'il est mort");
+               LOGGER.error("combatant inconnu, on considere qu'il est mort + " + c.getMyName());
                imageName = RIP_FILE;
            }
        }
@@ -839,15 +845,16 @@ public class GUIControler {
 
        ImageView myImageView = null;
        GridPane gridpane = (GridPane)getNodeFromGridPane(myBoardGame, col, (row));
-       LOGGER.warn("col = "+col+" row = "+row);
+
        if (gridpane==null){
-           LOGGER.warn("-- la grid est nulle c'est bizarre ");
            gridpane = new GridPane();
        }
 
        if((gridpane.getChildren()!=null)) {
-           //  TBD : il faut supprimer l'ancien
-           gridpane.getChildren().remove(0);
+           if(gridpane.getChildren().size()>0){
+               gridpane.getChildren().removeAll(gridpane.getChildren());
+           }
+
            gridpane.getChildren().add(new ImageView(new Image(getClass().getResourceAsStream(imageName), 120, 120, true, true)));
         }
         else{
@@ -855,77 +862,51 @@ public class GUIControler {
         }
 
         myNode = getNodeFromGridPane(myBoardGame, col, (row+1));
-       LOGGER.warn("-- myNode 11111111111111111111 " + myNode);
+
+        gridpane.setStyle("-fx-background-color: #f5f4f5;");
+
        if (myNode != null){
             ((Label)myNode).setText(c.toString());
         }
+       else{
+           myNode = new Label(c.toString());
+           gridpane.getChildren().add(myNode);
+                LOGGER.warn("-- myNode est null ");
+            }
+
     }
 
     private void resetEnemyBoard(){
+        GridPane gridpane =null;
+        Label myLabel = null;
 
-        /**for (int i = 0; i < 4; i++) {    // on efface le board, si marche pas mettre 4
+        for (int i=0; i<4; i++){
+
             try {
-
-                GridPane gridpane = (GridPane) getNodeFromGridPane(myBoardGame, i, 0);
-                try{
-                    gridpane.getChildren().removeAll();
-                } catch (Exception e) {
-
+                gridpane = (GridPane) getNodeFromGridPane(myBoardGame, i, 0);
+                if (gridpane != null && gridpane.getChildren() != null) {
+                    gridpane.getChildren().removeAll(gridpane.getChildren());
                 }
+            } catch (Exception e){
+                LOGGER.error("erreur resetEnemyBoard : "+e.getMessage());
+            }
 
-                Label myLabel = (Label) getNodeFromGridPane(myBoardGame, i, 1);
+            try{
+                myLabel = (Label) getNodeFromGridPane(myBoardGame, i, 1);
                 if (myLabel!=null){
                     myLabel.setText("");
                 }
-            } catch (Exception e) {
-                LOGGER.warn("resetEnemyBoard : " + e.toString());
-            }
-        }**/
-        try {
-            GridPane gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 0, 0);
-            if ( gridpane!=null && gridpane.getChildren()!=null) {
-                LOGGER.warn("11111111111111111111111111 " + gridpane.getChildren());
-                gridpane.getChildren().remove(0);
-                LOGGER.warn("11111111111111111111111111 " + gridpane.getChildren());
-            }
-
-            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 1, 0);
-            if ( gridpane!=null && gridpane.getChildren()!=null) {
-                LOGGER.warn("22222222222222222222222222 " + gridpane.getChildren());
-                gridpane.getChildren().remove(0);
-                LOGGER.warn("22222222222222222222222222 " + gridpane.getChildren());
-            }
-            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 2, 0);
-            if ( gridpane!=null && gridpane.getChildren()!=null) {
-                LOGGER.warn("33333333333333333333333333 " + gridpane.getChildren());
-                gridpane.getChildren().remove(0);
-                LOGGER.warn("33333333333333333333333333 " + gridpane.getChildren());
-            }
-            gridpane = (GridPane) getNodeFromGridPane(myBoardGame, 3, 0);
-            if ( gridpane!=null && gridpane.getChildren()!=null) {
-                LOGGER.warn("44444444444444444444444444 " + gridpane.getChildren());
-                gridpane.getChildren().remove(0);
-                LOGGER.warn("44444444444444444444444444 " + gridpane.getChildren());
+                else {
+                    myLabel = new Label("");
+                    gridpane.getChildren().add(myLabel);
+                }
+            } catch (Exception e){
+                LOGGER.error("erreur resetEnemyBoard : "+e.getMessage());
             }
 
 
-            Label myLabel = (Label) getNodeFromGridPane(myBoardGame, 0, 1);
-            myLabel.setText("");
-            myLabel = (Label) getNodeFromGridPane(myBoardGame, 1, 1);
-            myLabel.setText("");
-            myLabel = (Label) getNodeFromGridPane(myBoardGame, 2, 1);
-            myLabel.setText("");
-            myLabel = (Label) getNodeFromGridPane(myBoardGame, 3, 1);
-            myLabel.setText("");
-
-        } catch (Exception e) {
-            LOGGER.warn("resetEnemyBoard : " + e.toString());
         }
     }
-
-
-
-
 
     private void resetAllyBoard(){
 
@@ -955,6 +936,10 @@ public class GUIControler {
             }
         }
     }
+    /**
+     * bouton de l'ecran qui permet de déclencher l'attaque speciale
+     * @param event action sur le bouton
+     */
     @FXML
     protected void onActionButtonSpecial(ActionEvent event) {
         //on a le personnage de selectionné
@@ -1021,7 +1006,10 @@ public class GUIControler {
 
     }
 
-
+    /**
+     * prise en compte de l'action de defense
+     * @param event action sur la souris
+     */
     @FXML
     protected void onActionButtonDefense(ActionEvent event) {
 
@@ -1040,13 +1028,17 @@ public class GUIControler {
     }
 
     /**
-     * on passe au tour suivant, les combatants qui étaient en position défense perdent leur postion défense pour le tour suivant
+     * on passe au tour suivant, les combatants qui étaient en position défense perdent leur position défense pour le tour suivant
      */
     private void resetDefense(){
         for (Combatant c : myAttackList){
             c.setDefending(false);
         }
     }
+    /**
+     * prise en compte de l'attaque d'un allie
+     * @param event action sur la souris
+     */
     @FXML
     protected void onActionButtonAttack(ActionEvent event) {
         // on a le personnage de sélectionné
@@ -1055,23 +1047,23 @@ public class GUIControler {
 
         Enemy myEnnemy = null;
 
-        try{
-            Combatant ctmp = myAttackListEnCours.get(0);   // l'allié qui va attaquer
-            myEnnemy = (Enemy) myEnemies[positionDeLennemi]; // l'ennemi qui va être attaqué
-            LOGGER.warn("-->l'attaquant : " + ctmp.toString() + " va attaquer l'ennemi : " + myEnnemy.toString());
 
-            // on fait l'attaque
-            ctmp.doMyAction(Constant.ACTION_MEELE_ATTACK, ctmp.getMaxAttackPoints(), myEnnemy);
-            LOGGER.warn("-->l'ennemi après l'attaque : " + myEnnemy.toString());
-
-            myEnemies[positionDeLennemi] = myEnnemy; // on sauvegarde le changement
-
-            // on met à jour l'affichage de l'ennemi
-            drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0 );
+        if (positionDeLennemi<0)
+        {
+            positionDeLennemi=0;
         }
-        catch(Exception e){
-            LOGGER.error("erreur : " + e.getMessage());
-        }
+        Combatant ctmp = myAttackListEnCours.get(0);   // l'allié qui va attaquer
+        myEnnemy = (Enemy) myEnemies[positionDeLennemi]; // l'ennemi qui va être attaqué
+        LOGGER.warn("-->l'attaquant : " + ctmp.toString() + " va attaquer l'ennemi : " + myEnnemy.toString());
+
+        // on fait l'attaque
+        ctmp.doMyAction(Constant.ACTION_MEELE_ATTACK, ctmp.getMaxAttackPoints(), myEnnemy);
+        LOGGER.warn("-->l'ennemi après l'attaque : " + myEnnemy.toString() + " positionDeLennemi=" + positionDeLennemi);
+
+        myEnemies[positionDeLennemi] = myEnnemy; // on sauvegarde le changement
+
+        // on met à jour l'affichage de l'ennemi
+        drawAfterFightEnemy(myEnnemy, positionDeLennemi, 0 );
 
         startHeroTurn();
 
@@ -1081,6 +1073,11 @@ public class GUIControler {
 
         }
     }
+
+    /**
+     * prise en compte de l'action de manger de la nourriture
+     * @param event action sur la souris
+     */
     @FXML
     protected void onActionButtonFood(ActionEvent event) {
         Combatant ctmp =myAttackListEnCours.get(attaquantEnCours);
@@ -1105,6 +1102,11 @@ public class GUIControler {
         }
 
     }
+
+    /**
+     * prise en compte de l'action de boire de la potion
+     * @param event clic sur le bouton pour déclecher l'action
+     */
     @FXML
     protected void onActionButtonPotion(ActionEvent event) {
         // on a le personnage de sélectionné
@@ -1148,7 +1150,6 @@ public class GUIControler {
      * @author  A. N.
      * @version 1.0
      */
-
     @FXML
     protected void onStartFightButtonClick(ActionEvent event) {
         int nbOfHeroes = 1;
@@ -1250,22 +1251,21 @@ public class GUIControler {
                     return node;
                 }
             } catch (Exception e) {
-                //   LOGGER.error("Exception " + e);
+                 //  LOGGER.error("Exception " + e);
             }
 
         }
         return null;
     }
 
-
-    @FXML
     /**
      * lis le nombre de héros sélectionnés et active les lignes correspondantes
-     * @param e : l'action du cliquer sur le menu déroulant
+     * @param e : l'action de cliquer sur le menu déroulant
      *
      * @author  A. N.
      * @version 1.0
      */
+    @FXML
     protected void onCbButtonClick(Event e) {
 
         int nbOfHeroes = 1;

@@ -21,6 +21,10 @@ public class Mage extends SpellCaster {
     // quantité de nouriture initiale
     private Food myFood = null;
 
+    /**
+     * définit une potion
+     * @param myPotion la valeur de la potion
+     */
     public void setMyPotion(Potion myPotion) {
         this.myPotion = myPotion;
     }
@@ -109,6 +113,10 @@ public class Mage extends SpellCaster {
         return false;
     }
 
+    /**
+     * donner la valeur de la potion et la quantité
+     * @return la potion pour ce héros
+     */
     public Potion getMyPotion(){
         List<Item> myItems = this.getMyItems();
         if (myItems == null){

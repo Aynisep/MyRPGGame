@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class TrollKing extends Enemy {
 
-    private String myName = "TrollKing";
+    private String myName = S_TROLL;
 
 
     /**

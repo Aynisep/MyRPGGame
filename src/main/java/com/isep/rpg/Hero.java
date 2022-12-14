@@ -71,6 +71,11 @@ public abstract class Hero extends Combatant {
             }
         }
     }
+
+    /**
+     * donner la valeur de la nourriture
+     * @return un nourriture
+     */
     public Food getMyFood(){
         List<Item> myItems = this.getMyItems();
         if (myItems == null){
