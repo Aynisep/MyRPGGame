@@ -167,31 +167,31 @@ public class GUIControler {
     private void prepareBoardGame() {
         myHeroes = new Combatant[Integer.parseInt(cbNumberOfHeroes.getValue().toString())];
         if (cbHero1.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-            myHeroes[0] = new Warrior(200, 125, 20, 5, 15, 0);
+            myHeroes[0] = new Warrior(200, 50, 50, 3, 25, 0);
             drawImage(hero[0][1], 0, 3);
         } else if (cbHero1.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-            myHeroes[0] = new Hunter(125, 10, 7, 50, 5, 10, 0);
+            myHeroes[0] = new Hunter(125, 25, 20, 10, 3, 25, 0);
             drawImage(hero[1][1], 0, 3);
         } else if (cbHero1.getValue().toString().equalsIgnoreCase(hero[2][0])) {
-            myHeroes[0] = new Mage(100, 5, 5, 50, 20, 3, 10, 5, 15, 0);
+            myHeroes[0] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 0);
             drawImage(hero[2][1], 0, 3);
         } else {
-            myHeroes[0] = new Healer(80, 4, 4, 60, 15, 5, 10, 1, 15, 0);
+            myHeroes[0] = new Healer(100, 10, 10, 15, 15, 3, 5, 1, 25, 0);
             drawImage(hero[3][1], 0, 3);
         }
         drawLabel(myHeroes[0], 0, 4);
         if (!cbHero2.isDisable()) {
             if (cbHero2.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-                myHeroes[1] = new Warrior(200, 25, 20, 5, 15, 1);
+                myHeroes[1] = new Warrior(200, 50, 50, 3, 25, 1);
                 drawImage(hero[0][1], 1, 3);
             } else if (cbHero2.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-                myHeroes[1] = new Hunter(125, 10, 7, 50, 5, 10, 1);
+                myHeroes[1] = new Hunter(125, 25, 20, 10, 3, 25, 1);
                 drawImage(hero[1][1], 1, 3);
             } else if (cbHero2.getValue().toString().equalsIgnoreCase(hero[2][0])) {
-                myHeroes[1] = new Mage(100, 5, 5, 50, 20, 3, 10, 5, 15, 1);
+                myHeroes[1] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 1);
                 drawImage(hero[2][1], 1, 3);
             } else {
-                myHeroes[1] = new Healer(80, 4, 4, 60, 15, 5, 10, 1, 15, 1);
+                myHeroes[1] = new Healer(100, 10, 10, 15, 15, 3, 5, 1, 25, 1);
                 drawImage(hero[3][1], 1, 3);
             }
 
@@ -200,32 +200,32 @@ public class GUIControler {
 
         if (!cbHero3.isDisable()) {
             if (cbHero3.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-                myHeroes[2] = new Warrior(200, 25, 20, 5, 15, 2);
+                myHeroes[2] = new Warrior(200, 50, 50, 3, 25, 2);
                 drawImage(hero[0][1], 3, 3);
             } else if (cbHero3.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-                myHeroes[2] = new Hunter(125, 10, 7, 50, 5, 10, 2);
+                myHeroes[2] = new Hunter(125, 25, 20, 10, 3, 25, 2);
                 drawImage(hero[1][1], 3, 3);
             } else if (cbHero3.getValue().toString().equalsIgnoreCase(hero[2][0])) {
-                myHeroes[2] = new Mage(100, 5, 5, 50, 20, 3, 10, 5, 15, 2);
+                myHeroes[2] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 2);
                 drawImage(hero[2][1], 3, 3);
             } else {
-                myHeroes[2] = new Healer(80, 4, 4, 60, 15, 5, 10, 1, 15, 2);
+                myHeroes[2] = new Healer(100, 10, 10, 15, 15, 3, 5, 1, 25, 2);
                 drawImage(hero[3][1], 3, 3);
             }
             drawLabel(myHeroes[2], 3, 4);
         }
         if (!cbHero4.isDisable()) {
             if (cbHero4.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-                myHeroes[3] = new Warrior(200, 25, 20, 5, 15, 3);
+                myHeroes[3] = new Warrior(200, 50, 50, 3, 25, 3);
                 drawImage(hero[0][1], 4, 3);
             } else if (cbHero4.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-                myHeroes[3] = new Hunter(125, 10, 7, 50, 5, 10, 3);
+                myHeroes[3] = new Hunter(125, 25, 20, 10, 3, 25, 3);
                 drawImage(hero[1][1], 4, 3);
             } else if (cbHero4.getValue().toString().equalsIgnoreCase(hero[2][0])) {
-                myHeroes[3] = new Mage(100, 5, 5, 50, 20, 3, 10, 5, 15, 3);
+                myHeroes[3] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 3);
                 drawImage(hero[2][1], 4, 3);
             } else {
-                myHeroes[3] = new Healer(80, 4, 4, 60, 15, 5, 10, 1, 15, 3);
+                myHeroes[3] = new Healer(100, 10, 10, 15, 15, 3, 5, 1, 25, 3);
                 drawImage(hero[3][1], 4, 3);
             }
             drawLabel(myHeroes[3], 4, 4);
@@ -251,12 +251,12 @@ public class GUIControler {
         for (int i= 0; i < nbOfEnnemies; i++) {
 
             if (ennemyType.equalsIgnoreCase(Combatant.S_ORC) ){
-                myEnemies[i] = new Orc(200, 25, 20);
+                myEnemies[i] = new Orc(100, 15, 25);
                 drawImage(ORC_FILE, i,0);
                 drawLabel(myEnemies[i], i, 1);
             }
             else {
-                myEnemies[i] = new TrollKing(300,15,100);
+                myEnemies[i] = new TrollKing(400,24,100);
                 drawImage(TROLLKING_FILE, i,0);
                 drawLabel(myEnemies[i], i, 1);
             }
@@ -351,7 +351,7 @@ public class GUIControler {
 
                 int positionDansLaListe = trouverUnAlly();
                 if (positionDansLaListe<0){
-                    // mettre un ecran de perdu  #TODO y a un popup de perdu
+
                     resetDefense();
                 }
 
@@ -705,9 +705,10 @@ public class GUIControler {
 
                 if (cbHeroCare1.getValue().toString().equalsIgnoreCase(ACTION_CARE_RESET)){
                     c.setHealthPoints(c.getMaxHealthPoints());
+                    c.setDefensePoints(c.getMaxDefensePoints()-10);
                 }
                 else {
-                    c.setMaxAttackPoints(c.getMaxAttackPoints()+1);
+                    c.setMaxAttackPoints(c.getMaxAttackPoints()+5);
                 }
 
                 LOGGER.warn("apres mise à jour du personnage [["+ c.toString()+"]" );
