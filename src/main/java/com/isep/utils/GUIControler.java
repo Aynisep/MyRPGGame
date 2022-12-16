@@ -167,10 +167,10 @@ public class GUIControler {
     private void prepareBoardGame() {
         myHeroes = new Combatant[Integer.parseInt(cbNumberOfHeroes.getValue().toString())];
         if (cbHero1.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-            myHeroes[0] = new Warrior(200, 50, 50, 3, 25, 0);
+            myHeroes[0] = new Warrior(200, 25, 50, 3, 25, 0);
             drawImage(hero[0][1], 0, 3);
         } else if (cbHero1.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-            myHeroes[0] = new Hunter(125, 25, 20, 10, 3, 25, 0);
+            myHeroes[0] = new Hunter(125, 15, 20, 10, 3, 25, 0);
             drawImage(hero[1][1], 0, 3);
         } else if (cbHero1.getValue().toString().equalsIgnoreCase(hero[2][0])) {
             myHeroes[0] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 0);
@@ -182,10 +182,10 @@ public class GUIControler {
         drawLabel(myHeroes[0], 0, 4);
         if (!cbHero2.isDisable()) {
             if (cbHero2.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-                myHeroes[1] = new Warrior(200, 50, 50, 3, 25, 1);
+                myHeroes[1] = new Warrior(200, 25, 50, 3, 25, 1);
                 drawImage(hero[0][1], 1, 3);
             } else if (cbHero2.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-                myHeroes[1] = new Hunter(125, 25, 20, 10, 3, 25, 1);
+                myHeroes[1] = new Hunter(125, 15, 20, 10, 3, 25, 1);
                 drawImage(hero[1][1], 1, 3);
             } else if (cbHero2.getValue().toString().equalsIgnoreCase(hero[2][0])) {
                 myHeroes[1] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 1);
@@ -200,10 +200,10 @@ public class GUIControler {
 
         if (!cbHero3.isDisable()) {
             if (cbHero3.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-                myHeroes[2] = new Warrior(200, 50, 50, 3, 25, 2);
+                myHeroes[2] = new Warrior(200, 25, 50, 3, 25, 2);
                 drawImage(hero[0][1], 3, 3);
             } else if (cbHero3.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-                myHeroes[2] = new Hunter(125, 25, 20, 10, 3, 25, 2);
+                myHeroes[2] = new Hunter(125, 15, 20, 10, 3, 25, 2);
                 drawImage(hero[1][1], 3, 3);
             } else if (cbHero3.getValue().toString().equalsIgnoreCase(hero[2][0])) {
                 myHeroes[2] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 2);
@@ -216,10 +216,10 @@ public class GUIControler {
         }
         if (!cbHero4.isDisable()) {
             if (cbHero4.getValue().toString().equalsIgnoreCase(hero[0][0])) {
-                myHeroes[3] = new Warrior(200, 50, 50, 3, 25, 3);
+                myHeroes[3] = new Warrior(200, 25, 50, 3, 25, 3);
                 drawImage(hero[0][1], 4, 3);
             } else if (cbHero4.getValue().toString().equalsIgnoreCase(hero[1][0])) {
-                myHeroes[3] = new Hunter(125, 25, 20, 10, 3, 25, 3);
+                myHeroes[3] = new Hunter(125, 15, 20, 10, 3, 25, 3);
                 drawImage(hero[1][1], 4, 3);
             } else if (cbHero4.getValue().toString().equalsIgnoreCase(hero[2][0])) {
                 myHeroes[3] = new Mage(100, 10, 15, 15, 25, 3, 5, 3, 25, 3);
@@ -954,7 +954,7 @@ public class GUIControler {
         if (ctmp.getMyName().equals(Combatant.S_HUNTER)) {
             // on décoche une flèche sur l'ennemi
             myEnnemy = (Enemy) myEnemies[positionDeLennemi];
-            ctmp.doMyAction(Constant.ACTION_SHOOT, 20, myEnnemy);
+            ctmp.doMyAction(Constant.ACTION_SHOOT, getMaxAttackPoints()+10, myEnnemy);
             myEnemies[positionDeLennemi] = myEnnemy;
             drawAfterFightEnemy(myEnemies[positionDeLennemi], positionDeLennemi, 0);
 
