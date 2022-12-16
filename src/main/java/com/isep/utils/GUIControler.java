@@ -1323,10 +1323,3 @@ public class GUIControler {
 
 
 }
-
-
-/**+
- * petit bug affichage après attaque spéciale d'un heal ou d'un mage affiche mauvais label
- * un bug sur les attaques a verifier
- * quand on fait une potion ou un heal on affiche plus les bonnes stats, faut mettre a jour juste la cible
- */
